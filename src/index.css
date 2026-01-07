@@ -1,6 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -19,7 +17,7 @@
     --popover-foreground: 40 20% 95%;
 
     /* Champagne Gold Primary */
-    --primary: 29 60% 93%;
+    --primary: 38 45% 65%;
     --primary-foreground: 0 0% 4%;
 
     /* Muted Charcoal */
@@ -280,7 +278,7 @@
   .bg-obsidian { background-color: hsl(var(--obsidian)); }
   .bg-charcoal { background-color: hsl(var(--charcoal)); }
   .bg-charcoal-light { background-color: hsl(var(--charcoal-light)); }
-
+  
   .text-champagne { color: hsl(var(--champagne)); }
   .text-champagne-light { color: hsl(var(--champagne-light)); }
   .text-champagne-muted { color: hsl(var(--champagne-muted)); }
