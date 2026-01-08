@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 
 interface AuthModalProps {
@@ -15,24 +13,24 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-obsidian/90 backdrop-blur-xl animate-fade-in"
+        className="absolute inset-0 bg-charcoal/90 backdrop-blur-xl animate-fade-in"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md bg-charcoal border border-border rounded-sm p-8 md:p-10 animate-scale-in">
+      <div className="relative z-10 w-full max-w-md bg-background border border-border rounded-sm p-8 md:p-10 animate-scale-in">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-cream/60 hover:text-cream transition-colors"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Content */}
         <div className="text-center">
-          <h2 className="text-2xl font-serif text-cream mb-3">Sign In Required</h2>
-          <p className="text-cream-muted mb-8">
+          <h2 className="text-2xl font-serif text-foreground mb-3">Sign In Required</h2>
+          <p className="text-muted-foreground mb-8">
             Please sign in or create an account to add items to your bag and complete your purchase.
           </p>
 
@@ -55,11 +53,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
           <p className="text-sm text-muted-foreground mt-8">
             By continuing, you agree to our{' '}
-            <Link to="/terms" className="text-champagne hover:underline">
+            <Link to="/terms" className="text-copper hover:underline">
               Terms of Service
             </Link>{' '}
             and{' '}
-            <Link to="/privacy" className="text-champagne hover:underline">
+            <Link to="/privacy" className="text-copper hover:underline">
               Privacy Policy
             </Link>
           </p>

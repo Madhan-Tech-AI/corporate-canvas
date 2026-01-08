@@ -68,7 +68,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-obsidian/95 backdrop-blur-xl"
+        className="absolute inset-0 bg-charcoal/95 backdrop-blur-xl"
         onClick={onClose}
       />
 
@@ -82,18 +82,18 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           )}
           style={{ transitionDelay: isOpen ? '150ms' : '0ms' }}
         >
-          <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 text-cream/40" />
+          <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 text-warm-white/40" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search artifacts, paintings, collections..."
-            className="w-full bg-transparent border-b border-cream/20 py-4 pl-10 pr-10 text-2xl md:text-3xl font-light text-cream placeholder:text-cream/30 focus:outline-none focus:border-champagne/50 transition-colors duration-300"
+            className="w-full bg-transparent border-b border-warm-white/20 py-4 pl-10 pr-10 text-2xl md:text-3xl font-light text-warm-white placeholder:text-warm-white/30 focus:outline-none focus:border-copper/50 transition-colors duration-300"
           />
           <button
             onClick={onClose}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-cream/60 hover:text-cream transition-colors duration-300"
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-warm-white/60 hover:text-warm-white transition-colors duration-300"
           >
             <X className="w-6 h-6" />
           </button>
@@ -107,17 +107,17 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           )}
           style={{ transitionDelay: isOpen ? '250ms' : '0ms' }}
         >
-          <p className="text-caption mb-6">{results.length} Results</p>
+          <p className="text-caption text-warm-white mb-6">{results.length} Results</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {results.map((result, index) => (
               <Link
                 key={result.id}
                 to={result.href}
                 onClick={onClose}
-                className="group flex items-center gap-6 p-4 bg-charcoal/50 rounded hover:bg-charcoal transition-all duration-300"
+                className="group flex items-center gap-6 p-4 bg-warm-white/5 rounded hover:bg-warm-white/10 transition-all duration-300"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <div className="w-20 h-20 bg-charcoal-light rounded overflow-hidden flex-shrink-0">
+                <div className="w-20 h-20 bg-warm-white/10 rounded overflow-hidden flex-shrink-0">
                   <img
                     src={result.image}
                     alt={result.name}
@@ -125,10 +125,10 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   />
                 </div>
                 <div>
-                  <p className="text-cream font-medium group-hover:text-champagne transition-colors duration-300">
+                  <p className="text-warm-white font-medium group-hover:text-copper-light transition-colors duration-300">
                     {result.name}
                   </p>
-                  <p className="text-cream-muted text-sm mt-1">{result.category}</p>
+                  <p className="text-warm-white/60 text-sm mt-1">{result.category}</p>
                 </div>
               </Link>
             ))}
@@ -143,8 +143,8 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
               isOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             )}
           >
-            <p className="text-cream-muted text-lg">No results found for "{query}"</p>
-            <p className="text-muted-foreground mt-2">Try searching for artifacts, paintings, or collections</p>
+            <p className="text-warm-white/70 text-lg">No results found for "{query}"</p>
+            <p className="text-warm-white/50 mt-2">Try searching for artifacts, paintings, or collections</p>
           </div>
         )}
       </div>
