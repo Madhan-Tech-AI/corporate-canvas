@@ -43,7 +43,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link 
             to="/" 
-            className="text-cream font-serif text-xl md:text-2xl tracking-wide hover:text-champagne transition-colors duration-300"
+            className="text-charcoal font-serif text-xl md:text-2xl tracking-wide hover:text-copper transition-colors duration-300"
           >
             ARTÉUM
           </Link>
@@ -56,7 +56,7 @@ export default function Navbar() {
                 to={link.href}
                 className={cn(
                   'link-premium',
-                  location.pathname === link.href && 'text-champagne'
+                  location.pathname === link.href && 'text-copper'
                 )}
               >
                 {link.name}
@@ -68,7 +68,7 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="text-cream/80 hover:text-cream transition-colors duration-300"
+              className="text-charcoal/80 hover:text-copper transition-colors duration-300"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -76,7 +76,7 @@ export default function Navbar() {
             
             <Link
               to="/bag"
-              className="text-cream/80 hover:text-cream transition-colors duration-300 relative"
+              className="text-charcoal/80 hover:text-copper transition-colors duration-300 relative"
               aria-label="Shopping bag"
             >
               <ShoppingBag className="w-5 h-5" />
@@ -84,7 +84,7 @@ export default function Navbar() {
             
             <Link
               to="/login"
-              className="text-cream/80 hover:text-cream transition-colors duration-300"
+              className="text-charcoal/80 hover:text-copper transition-colors duration-300"
               aria-label="Account"
             >
               <User className="w-5 h-5" />
@@ -93,7 +93,7 @@ export default function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden text-cream/80 hover:text-cream transition-colors duration-300"
+              className="lg:hidden text-charcoal/80 hover:text-copper transition-colors duration-300"
               aria-label="Menu"
             >
               {isMobileMenuOpen ? (
@@ -108,7 +108,7 @@ export default function Navbar() {
         {/* Mobile Menu */}
         <div
           className={cn(
-            'lg:hidden absolute top-full left-0 right-0 bg-obsidian/98 backdrop-blur-xl border-b border-border overflow-hidden transition-all duration-500 ease-premium',
+            'lg:hidden absolute top-full left-0 right-0 bg-warm-white/98 backdrop-blur-xl border-b border-border overflow-hidden transition-all duration-500 ease-premium',
             isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           )}
         >
@@ -118,8 +118,8 @@ export default function Navbar() {
                 key={link.name}
                 to={link.href}
                 className={cn(
-                  'text-cream/80 text-lg font-light tracking-wide hover:text-cream transition-colors duration-300',
-                  location.pathname === link.href && 'text-champagne'
+                  'text-charcoal/80 text-lg font-light tracking-wide hover:text-copper transition-colors duration-300',
+                  location.pathname === link.href && 'text-copper'
                 )}
               >
                 {link.name}

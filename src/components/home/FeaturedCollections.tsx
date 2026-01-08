@@ -34,12 +34,12 @@ export default function FeaturedCollections() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <section className="section-padding bg-obsidian">
+    <section className="section-padding bg-background">
       <div className="container-premium">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <p className="text-caption text-champagne mb-4">Explore</p>
-          <h2 className="text-headline text-cream">Featured Collections</h2>
+          <p className="text-caption text-copper mb-4">Explore</p>
+          <h2 className="text-headline text-foreground">Featured Collections</h2>
         </div>
 
         {/* Collections Grid */}
@@ -66,7 +66,7 @@ export default function FeaturedCollections() {
               <div
                 className={cn(
                   'absolute inset-0 transition-all duration-500 ease-premium',
-                  'bg-gradient-to-t from-obsidian via-obsidian/50 to-transparent',
+                  'bg-gradient-to-t from-charcoal via-charcoal/50 to-transparent',
                   hoveredId === collection.id ? 'opacity-90' : 'opacity-70'
                 )}
               />
@@ -75,18 +75,18 @@ export default function FeaturedCollections() {
               <div className="absolute inset-0 p-8 flex flex-col justify-end">
                 <p
                   className={cn(
-                    'text-caption text-champagne mb-2 transition-all duration-500 ease-premium',
+                    'text-caption text-copper-light mb-2 transition-all duration-500 ease-premium',
                     hoveredId === collection.id ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
                   )}
                 >
                   {collection.subtitle}
                 </p>
-                <h3 className="text-2xl md:text-3xl font-serif text-cream mb-3">
+                <h3 className="text-2xl md:text-3xl font-serif text-warm-white mb-3">
                   {collection.title}
                 </h3>
                 <p
                   className={cn(
-                    'text-cream-muted text-sm leading-relaxed mb-4 max-w-xs transition-all duration-500 ease-premium',
+                    'text-warm-white/70 text-sm leading-relaxed mb-4 max-w-xs transition-all duration-500 ease-premium',
                     hoveredId === collection.id ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                   )}
                 >
@@ -94,7 +94,7 @@ export default function FeaturedCollections() {
                 </p>
                 <div
                   className={cn(
-                    'flex items-center gap-2 text-champagne text-sm tracking-wider uppercase transition-all duration-500 ease-premium',
+                    'flex items-center gap-2 text-copper-light text-sm tracking-wider uppercase transition-all duration-500 ease-premium',
                     hoveredId === collection.id ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                   )}
                 >

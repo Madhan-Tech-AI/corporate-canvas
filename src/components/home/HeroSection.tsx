@@ -18,34 +18,34 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-obsidian">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-warm-cream">
       {/* Parallax Background Layers */}
       <div ref={parallaxRef} className="absolute inset-0 z-0">
         {/* Abstract texture layer */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-champagne/10 to-transparent blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-champagne/5 to-transparent blur-3xl" />
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-copper/20 to-transparent blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-copper-light/15 to-transparent blur-3xl" />
         </div>
 
         {/* Geometric accent */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-cream/5 rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-cream/3 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-copper/10 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-copper/5 rounded-full" />
       </div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-obsidian/50 via-obsidian/70 to-obsidian z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-warm-cream/50 via-warm-cream/70 to-warm-cream z-10" />
 
       {/* Content */}
       <div className="relative z-20 container-premium text-center">
         {/* Eyebrow */}
-        <p className="text-caption text-champagne fade-in-up mb-6">
+        <p className="text-caption text-copper fade-in-up mb-6">
           Curated Excellence Since 2015
         </p>
 
         {/* Main Headline */}
-        <h1 className="text-display text-cream fade-in-up fade-in-up-delay-1 max-w-5xl mx-auto">
+        <h1 className="text-display text-charcoal fade-in-up fade-in-up-delay-1 max-w-5xl mx-auto">
           Curated Artifacts & Canvas Art for{' '}
-          <span className="italic text-champagne">Corporate Excellence</span>
+          <span className="italic text-copper">Corporate Excellence</span>
         </h1>
 
         {/* Subheadline */}
@@ -66,17 +66,17 @@ export default function HeroSection() {
         {/* Trust Indicators */}
         <div className="flex items-center justify-center gap-8 mt-20 fade-in-up fade-in-up-delay-4">
           <div className="text-center">
-            <p className="text-3xl font-serif text-champagne">500+</p>
+            <p className="text-3xl font-serif text-copper">500+</p>
             <p className="text-caption mt-1">Corporate Clients</p>
           </div>
           <div className="w-px h-12 bg-border" />
           <div className="text-center">
-            <p className="text-3xl font-serif text-champagne">10+</p>
+            <p className="text-3xl font-serif text-copper">10+</p>
             <p className="text-caption mt-1">Years Experience</p>
           </div>
           <div className="w-px h-12 bg-border" />
           <div className="text-center">
-            <p className="text-3xl font-serif text-champagne">2500+</p>
+            <p className="text-3xl font-serif text-copper">2500+</p>
             <p className="text-caption mt-1">Artworks Delivered</p>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function HeroSection() {
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 scroll-indicator">
-        <ChevronDown className="w-6 h-6 text-cream/40" />
+        <ChevronDown className="w-6 h-6 text-charcoal/40" />
       </div>
     </section>
   );

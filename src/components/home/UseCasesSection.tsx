@@ -46,12 +46,12 @@ export default function UseCasesSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="section-padding bg-charcoal">
+    <section ref={sectionRef} className="section-padding bg-warm-cream">
       <div className="container-premium">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <p className="text-caption text-champagne mb-4">Use Cases</p>
-          <h2 className="text-headline text-cream">Designed for Corporate Excellence</h2>
+          <p className="text-caption text-copper mb-4">Use Cases</p>
+          <h2 className="text-headline text-foreground">Designed for Corporate Excellence</h2>
           <p className="text-subheadline mt-4 max-w-2xl mx-auto">
             From executive offices to reception areas, our collections elevate every corporate environment.
           </p>
@@ -81,9 +81,9 @@ export default function UseCasesSection() {
               </div>
 
               {/* Content Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/40 to-transparent flex flex-col justify-end p-6">
-                <h3 className="text-xl font-serif text-cream mb-2">{useCase.title}</h3>
-                <p className="text-cream-muted text-sm leading-relaxed">{useCase.description}</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-transparent flex flex-col justify-end p-6">
+                <h3 className="text-xl font-serif text-warm-white mb-2">{useCase.title}</h3>
+                <p className="text-warm-white/70 text-sm leading-relaxed">{useCase.description}</p>
               </div>
             </div>
           ))}

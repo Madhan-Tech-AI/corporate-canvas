@@ -42,17 +42,17 @@ export default function ProductDiscovery() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <section className="section-padding bg-charcoal">
+    <section className="section-padding bg-warm-cream">
       <div className="container-premium">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
           <div>
-            <p className="text-caption text-champagne mb-4">Discover</p>
-            <h2 className="text-headline text-cream">Featured Artworks</h2>
+            <p className="text-caption text-copper mb-4">Discover</p>
+            <h2 className="text-headline text-foreground">Featured Artworks</h2>
           </div>
           <Link
             to="/collections"
-            className="mt-6 md:mt-0 inline-flex items-center gap-2 text-champagne text-sm tracking-wider uppercase hover:gap-4 transition-all duration-300"
+            className="mt-6 md:mt-0 inline-flex items-center gap-2 text-copper text-sm tracking-wider uppercase hover:gap-4 transition-all duration-300"
           >
             View All
             <ArrowRight className="w-4 h-4" />
@@ -70,7 +70,7 @@ export default function ProductDiscovery() {
               onMouseLeave={() => setHoveredId(null)}
             >
               {/* Image Container */}
-              <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-charcoal-light mb-4">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-muted mb-4">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -81,18 +81,18 @@ export default function ProductDiscovery() {
                 />
                 
                 {/* Tag */}
-                <span className="absolute top-4 left-4 text-xs tracking-widest uppercase bg-obsidian/80 text-cream px-3 py-1.5 backdrop-blur-sm">
+                <span className="absolute top-4 left-4 text-xs tracking-widest uppercase bg-charcoal/80 text-warm-white px-3 py-1.5 backdrop-blur-sm">
                   {product.tag}
                 </span>
 
                 {/* Hover Overlay */}
                 <div
                   className={cn(
-                    'absolute inset-0 bg-obsidian/60 flex items-center justify-center transition-opacity duration-300',
+                    'absolute inset-0 bg-charcoal/60 flex items-center justify-center transition-opacity duration-300',
                     hoveredId === product.id ? 'opacity-100' : 'opacity-0'
                   )}
                 >
-                  <span className="text-cream text-sm tracking-widest uppercase border border-cream/50 px-6 py-3">
+                  <span className="text-warm-white text-sm tracking-widest uppercase border border-warm-white/50 px-6 py-3">
                     View Details
                   </span>
                 </div>
@@ -100,11 +100,11 @@ export default function ProductDiscovery() {
 
               {/* Product Info */}
               <div>
-                <p className="text-caption text-champagne-muted mb-1">{product.category}</p>
-                <h3 className="text-cream font-serif text-lg mb-2 group-hover:text-champagne transition-colors duration-300">
+                <p className="text-caption text-copper-muted mb-1">{product.category}</p>
+                <h3 className="text-foreground font-serif text-lg mb-2 group-hover:text-copper transition-colors duration-300">
                   {product.name}
                 </h3>
-                <p className="text-cream-muted text-sm">{product.price}</p>
+                <p className="text-muted-foreground text-sm">{product.price}</p>
               </div>
             </Link>
           ))}

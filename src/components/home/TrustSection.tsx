@@ -70,7 +70,7 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
 
 export default function TrustSection() {
   return (
-    <section className="section-padding bg-obsidian">
+    <section className="section-padding bg-background">
       <div className="container-premium">
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24">
@@ -80,7 +80,7 @@ export default function TrustSection() {
               className="text-center"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <p className="text-4xl md:text-5xl font-serif text-champagne mb-2">
+              <p className="text-4xl md:text-5xl font-serif text-copper mb-2">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
               <p className="text-caption">{stat.label}</p>
@@ -94,15 +94,15 @@ export default function TrustSection() {
             <div
               key={testimonial.author}
               className={cn(
-                'p-8 md:p-10 bg-charcoal rounded-sm border border-border'
+                'p-8 md:p-10 bg-warm-cream rounded-sm border border-border'
               )}
             >
-              <blockquote className="text-cream text-lg md:text-xl font-serif italic leading-relaxed mb-8">
+              <blockquote className="text-foreground text-lg md:text-xl font-serif italic leading-relaxed mb-8">
                 "{testimonial.quote}"
               </blockquote>
               <div>
-                <p className="text-cream font-medium">{testimonial.author}</p>
-                <p className="text-cream-muted text-sm mt-1">
+                <p className="text-foreground font-medium">{testimonial.author}</p>
+                <p className="text-muted-foreground text-sm mt-1">
                   {testimonial.title}, {testimonial.company}
                 </p>
               </div>
@@ -113,10 +113,10 @@ export default function TrustSection() {
         {/* Client Logos */}
         <div className="mt-24">
           <p className="text-caption text-center mb-10">Trusted By Leading Corporations</p>
-          <div className="flex flex-wrap items-center justify-center gap-12 opacity-40">
+          <div className="flex flex-wrap items-center justify-center gap-12 opacity-60">
             {['Fortune 500', 'Design Studios', 'Architecture Firms', 'Tech Giants', 'Financial Services'].map(
               (client) => (
-                <span key={client} className="text-cream/60 text-sm tracking-widest uppercase">
+                <span key={client} className="text-foreground/60 text-sm tracking-widest uppercase">
                   {client}
                 </span>
               )
