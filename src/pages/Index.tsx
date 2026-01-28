@@ -1,11 +1,15 @@
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import HeroSection from '@/components/home/HeroSection';
-import FeaturedCollections from '@/components/home/FeaturedCollections';
-import UseCasesSection from '@/components/home/UseCasesSection';
-import TrustSection from '@/components/home/TrustSection';
-import ProductDiscovery from '@/components/home/ProductDiscovery';
+import CategoryPreview from '@/components/home/CategoryPreview';
+import ArtTypesPreview from '@/components/home/ArtTypesPreview';
+import FeaturedArtworks from '@/components/home/FeaturedArtworks';
+import FeaturedArtists from '@/components/home/FeaturedArtists';
 import CustomOrderSection from '@/components/home/CustomOrderSection';
+import SellerPromo from '@/components/home/SellerPromo';
+import PromoBanner from '@/components/home/PromoBanner';
+import Testimonials from '@/components/home/Testimonials';
+import Newsletter from '@/components/home/Newsletter';
 
 export default function Index() {
   return (
@@ -13,11 +17,15 @@ export default function Index() {
       <Navbar />
       <main>
         <HeroSection />
-        <FeaturedCollections />
-        <UseCasesSection />
-        <ProductDiscovery />
-        <TrustSection />
+        <CategoryPreview />
+        <ArtTypesPreview />
+        <FeaturedArtworks />
+        <FeaturedArtists />
         <CustomOrderSection />
+        <SellerPromo />
+        <PromoBanner />
+        <Testimonials />
+        <Newsletter />
       </main>
       <Footer />
     </div>

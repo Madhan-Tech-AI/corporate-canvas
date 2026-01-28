@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
+import Reveal from '@/components/Reveal';
 
 export default function HeroSection() {
   const parallaxRef = useRef<HTMLDivElement>(null);
@@ -21,8 +22,17 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-warm-cream">
       {/* Parallax Background Layers */}
       <div ref={parallaxRef} className="absolute inset-0 z-0">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1518005052351-41db2546e8c7?auto=format&fit=crop&w=2000&q=80"
+            alt="Corporate Art Gallery"
+            className="w-full h-full object-cover opacity-40"
+          />
+        </div>
+
         {/* Abstract texture layer */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-30 mix-blend-overlay">
           <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-copper/20 to-transparent blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-copper-light/15 to-transparent blur-3xl" />
         </div>
@@ -32,54 +42,43 @@ export default function HeroSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-copper/5 rounded-full" />
       </div>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-warm-cream/50 via-warm-cream/70 to-warm-cream z-10" />
+      {/* Gradient Overlay - Darker for more drama */}
+      <div className="absolute inset-0 bg-gradient-to-b from-warm-cream/80 via-warm-cream/90 to-warm-cream z-10" />
 
       {/* Content */}
       <div className="relative z-20 container-premium text-center">
         {/* Eyebrow */}
-        <p className="text-caption text-copper fade-in-up mb-6">
-          Curated Excellence Since 2015
-        </p>
+        <Reveal width="100%" delay={0.1}>
+          <p className="text-xs uppercase tracking-[0.3em] text-copper mb-8">
+            The Art of Atmosphere
+          </p>
+        </Reveal>
 
         {/* Main Headline */}
-        <h1 className="text-display text-charcoal fade-in-up fade-in-up-delay-1 max-w-5xl mx-auto">
-          Curated Artifacts & Canvas Art for{' '}
-          <span className="italic text-copper">Corporate Excellence</span>
-        </h1>
+        <Reveal width="100%" delay={0.3}>
+          <h1 className="text-display text-charcoal max-w-4xl mx-auto font-serif tracking-tight leading-tight">
+            Where Space <span className="italic text-copper">Meets Soul.</span>
+          </h1>
+        </Reveal>
 
         {/* Subheadline */}
-        <p className="text-subheadline fade-in-up fade-in-up-delay-2 max-w-2xl mx-auto mt-8">
-          Premium artifacts and bespoke artworks crafted for boardrooms, offices, and corporate gifting.
-        </p>
+        <Reveal width="100%" delay={0.5}>
+          <p className="text-subheadline max-w-xl mx-auto mt-8 font-light text-charcoal/80">
+            Transforming environments with curated artistry.
+          </p>
+        </Reveal>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 fade-in-up fade-in-up-delay-3">
-          <Link to="/contact" className="btn-primary">
-            Request Corporate Quote
-          </Link>
-          <Link to="/collections" className="btn-secondary">
-            Explore Collections
-          </Link>
-        </div>
-
-        {/* Trust Indicators */}
-        <div className="flex items-center justify-center gap-8 mt-20 fade-in-up fade-in-up-delay-4">
-          <div className="text-center">
-            <p className="text-3xl font-serif text-copper">500+</p>
-            <p className="text-caption mt-1">Corporate Clients</p>
+        <Reveal width="100%" delay={0.7}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-16">
+            <Link to="/collections" className="btn-primary min-w-[180px]">
+              Explore Collection
+            </Link>
+            <Link to="/contact" className="px-8 py-3 text-charcoal text-sm uppercase tracking-widest hover:text-copper transition-colors border-b border-transparent hover:border-copper">
+              Advisory
+            </Link>
           </div>
-          <div className="w-px h-12 bg-border" />
-          <div className="text-center">
-            <p className="text-3xl font-serif text-copper">10+</p>
-            <p className="text-caption mt-1">Years Experience</p>
-          </div>
-          <div className="w-px h-12 bg-border" />
-          <div className="text-center">
-            <p className="text-3xl font-serif text-copper">2500+</p>
-            <p className="text-caption mt-1">Artworks Delivered</p>
-          </div>
-        </div>
+        </Reveal>
       </div>
 
       {/* Scroll Indicator */}

@@ -34,12 +34,12 @@ export default function CustomOrderSection() {
       </div>
 
       <div className="container-premium relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           {/* Left Content */}
-          <div>
+          <div className="lg:col-span-5">
             <p className="text-caption text-copper-light mb-4">Bespoke Commissions</p>
             <h2 className="text-headline text-warm-white mb-6">
-              Custom Corporate Art,{' '}
+              Custom Art & Framing,{' '}
               <span className="italic text-copper-light">Tailored to You</span>
             </h2>
             <p className="text-lg md:text-xl text-warm-white/70 font-light tracking-wide leading-relaxed mb-10">
@@ -55,7 +55,7 @@ export default function CustomOrderSection() {
           </div>
 
           {/* Right - Process Steps */}
-          <div className="space-y-8">
+          <div className="lg:col-span-7 space-y-8">
             {steps.map((step, index) => (
               <div
                 key={step.number}
@@ -74,6 +74,20 @@ export default function CustomOrderSection() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Feature Image */}
+        <div className="mt-20 relative rounded-sm overflow-hidden aspect-[21/9]">
+          <img
+            src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1600&q=80"
+            alt="Artist working on custom commission"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent flex items-end p-8 md:p-12">
+            <p className="text-white/90 text-lg md:text-xl font-serif italic max-w-3xl">
+              "Art is not just decoration, it's a statement of values. Our custom commissions ensure that statement is uniquely yours."
+            </p>
           </div>
         </div>
       </div>

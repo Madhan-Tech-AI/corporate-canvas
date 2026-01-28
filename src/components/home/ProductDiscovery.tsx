@@ -25,7 +25,7 @@ const featuredProducts = [
     name: 'Marble Essence Installation',
     category: 'Custom Art',
     price: 'On Request',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1561839561-b13bcfe95249?auto=format&fit=crop&w=600&q=80',
     tag: 'Luxury Gifting',
   },
   {
@@ -33,7 +33,7 @@ const featuredProducts = [
     name: 'Geometric Flow Series',
     category: 'Canvas Paintings',
     price: '₹1,25,000',
-    image: 'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1506792006437-256b665541e2?auto=format&fit=crop&w=600&q=80',
     tag: 'Office Interiors',
   },
 ];
@@ -79,7 +79,7 @@ export default function ProductDiscovery() {
                     hoveredId === product.id ? 'scale-105' : 'scale-100'
                   )}
                 />
-                
+
                 {/* Tag */}
                 <span className="absolute top-4 left-4 text-xs tracking-widest uppercase bg-charcoal/80 text-warm-white px-3 py-1.5 backdrop-blur-sm">
                   {product.tag}

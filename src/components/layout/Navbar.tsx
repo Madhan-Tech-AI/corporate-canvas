@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, X, Menu } from 'lucide-react';
+import { Search, ShoppingBag, User, X, Menu, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SearchOverlay from './SearchOverlay';
+import CurrencySelector from '../ui/CurrencySelector';
 
 const navLinks = [
+  { name: 'Categories', href: '/categories' },
+  { name: 'Art Types', href: '/art-types' },
+  { name: 'Artists', href: '/artists' },
   { name: 'Collections', href: '/collections' },
   { name: 'Artifacts', href: '/artifacts' },
-  { name: 'Canvas Paintings', href: '/canvas-paintings' },
-  { name: 'Custom Corporate Art', href: '/custom-art' },
   { name: 'Corporate Services', href: '/corporate-services' },
 ];
 
@@ -41,8 +43,8 @@ export default function Navbar() {
       >
         <div className="container-premium flex items-center justify-between">
           {/* Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="text-charcoal font-serif text-xl md:text-2xl tracking-wide hover:text-copper transition-colors duration-300"
           >
             ARTÉUM
@@ -66,6 +68,10 @@ export default function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-6">
+            <div className="hidden md:block">
+              <CurrencySelector />
+            </div>
+
             <button
               onClick={() => setIsSearchOpen(true)}
               className="text-charcoal/80 hover:text-copper transition-colors duration-300"
@@ -73,7 +79,15 @@ export default function Navbar() {
             >
               <Search className="w-5 h-5" />
             </button>
-            
+
+            <Link
+              to="/wishlist"
+              className="text-charcoal/80 hover:text-copper transition-colors duration-300 relative"
+              aria-label="Wishlist"
+            >
+              <Heart className="w-5 h-5" />
+            </Link>
+
             <Link
               to="/bag"
               className="text-charcoal/80 hover:text-copper transition-colors duration-300 relative"
@@ -81,7 +95,7 @@ export default function Navbar() {
             >
               <ShoppingBag className="w-5 h-5" />
             </Link>
-            
+
             <Link
               to="/login"
               className="text-charcoal/80 hover:text-copper transition-colors duration-300"

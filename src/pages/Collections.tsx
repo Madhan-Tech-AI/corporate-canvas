@@ -6,10 +6,10 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
 const collections = [
-  { id: 1, title: 'The Meridian Collection', subtitle: 'Abstract Sculptures', description: 'A symphony of form and material, crafted for executive spaces.', pieces: 24, image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=1200&q=80', href: '/artifacts' },
-  { id: 2, title: 'Horizon Series', subtitle: 'Contemporary Canvas', description: 'Bold strokes and muted palettes for modern corporate environments.', pieces: 36, image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80', href: '/canvas-paintings' },
-  { id: 3, title: 'Essence Collection', subtitle: 'Marble & Stone', description: 'Timeless elegance carved from the finest materials.', pieces: 18, image: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=1200&q=80', href: '/artifacts' },
-  { id: 4, title: 'Corporate Editions', subtitle: 'Limited Releases', description: 'Exclusive artworks available only for corporate collectors.', pieces: 12, image: 'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=1200&q=80', href: '/canvas-paintings' },
+  { id: 1, title: 'The Meridian Collection', subtitle: 'Abstract Sculptures', description: 'A symphony of form and material, crafted for executive spaces.', pieces: 24, image: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=1200&q=80', href: '/artifacts' },
+  { id: 2, title: 'Horizon Series', subtitle: 'Contemporary Canvas', description: 'Bold strokes and muted palettes for modern corporate environments.', pieces: 36, image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=80', href: '/artifacts' },
+  { id: 3, title: 'Essence Collection', subtitle: 'Marble & Stone', description: 'Timeless elegance carved from the finest materials.', pieces: 18, image: 'https://images.unsplash.com/photo-1491245338813-c6832976196e?auto=format&fit=crop&w=1200&q=80', href: '/artifacts' },
+  { id: 4, title: 'Corporate Editions', subtitle: 'Limited Releases', description: 'Exclusive artworks available only for corporate collectors.', pieces: 12, image: 'https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07?auto=format&fit=crop&w=1200&q=80', href: '/artifacts' },
 ];
 
 export default function Collections() {
