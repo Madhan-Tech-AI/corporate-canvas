@@ -44,7 +44,7 @@ export default function CategoryPreview() {
                             <p className="text-caption text-copper mb-2">Curated Collections</p>
                             <h2 className="text-headline text-charcoal">Shop By Category</h2>
                         </div>
-                        <Link to="/collections" className="btn-secondary hidden sm:inline-flex">
+                        <Link to="/art-discovery" className="btn-secondary hidden sm:inline-flex">
                             View All Categories
                         </Link>
                     </div>
@@ -71,7 +71,7 @@ export default function CategoryPreview() {
                 </div>
 
                 <div className="mt-8 text-center sm:hidden">
-                    <Link to="/collections" className="btn-secondary">
+                    <Link to="/art-discovery" className="btn-secondary">
                         View All Categories
                     </Link>
                 </div>

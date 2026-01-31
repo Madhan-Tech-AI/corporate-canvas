@@ -3,18 +3,18 @@ import CurrencySelector from '../ui/CurrencySelector';
 
 const footerLinks = {
   collections: [
-    { name: 'Categories', href: '/categories' },
-    { name: 'Art Types', href: '/art-types' },
+    { name: 'Art Discovery', href: '/art-discovery' },
     { name: 'Artifacts', href: '/artifacts' },
-    { name: 'Limited Editions', href: '/collections' },
   ],
   corporate: [
     { name: 'Corporate Services', href: '/corporate-services' },
-    { name: 'Bulk Orders', href: '/corporate-services' },
-    { name: 'Art Consulting', href: '/corporate-services' },
+    { name: 'Sell Your Art', href: '/sell-art' },
+    { name: 'Customize', href: '/custom-art' },
+    { name: 'Art Consultancy', href: '/consultancy' },
+    { name: 'Trade Program', href: '/trade' },
   ],
   company: [
-    { name: 'About', href: '/about' },
+    { name: 'Our Studio', href: '/about' },
     { name: 'Contact', href: '/contact' },
     { name: 'Careers', href: '/about' },
     { name: 'Press', href: '/about' },

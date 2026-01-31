@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import { useLocation } from 'react-router-dom';
 
 export const LenisScroll = () => {
     const lenisRef = useRef<Lenis | null>(null);
+    const { pathname } = useLocation();
 
     useEffect(() => {
         // Initialize Lenis
@@ -31,6 +33,14 @@ export const LenisScroll = () => {
             lenis.destroy();
         };
     }, []);
+
+    useEffect(() => {
+        if (lenisRef.current) {
+            lenisRef.current.scrollTo(0, { immediate: true });
+        } else {
+            window.scrollTo(0, 0);
+        }
+    }, [pathname]);
 
     return null;
 };

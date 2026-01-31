@@ -28,7 +28,7 @@ export default function SellerPromo() {
                                 Connect with prestigious corporate clients and grow your career. We handle the logistics, marketing, and sales while you focus on creating.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Link to="/contact" className="btn-primary border-copper bg-copper hover:bg-copper-dark text-white">
+                                <Link to="/sell-art" className="btn-primary border-copper bg-copper hover:bg-copper-dark text-white">
                                     Apply to Join
                                 </Link>
                                 <Link to="/about" className="btn-secondary border-white/20 text-white hover:bg-white hover:text-charcoal">

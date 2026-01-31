@@ -8,10 +8,10 @@ import { WishlistProvider } from "./context/WishlistContext";
 import LenisScroll from "./components/LenisScroll";
 import Index from "./pages/Index";
 import Wishlist from "./pages/Wishlist";
-import Collections from "./pages/Collections";
-import Categories from "./pages/Categories";
-import ArtTypes from "./pages/ArtTypes";
-import Artists from "./pages/Artists";
+import SellArt from "./pages/SellArt";
+import CustomArt from "./pages/CustomArt";
+
+import ArtDiscovery from "./pages/ArtDiscovery";
 import ProductListing from "./pages/ProductListing";
 import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/Login";
@@ -31,20 +31,19 @@ const App = () => (
         <WishlistProvider>
           <Toaster />
           <Sonner />
-          <LenisScroll />
           <BrowserRouter>
+            <LenisScroll />
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/collections" element={<Collections />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/art-types" element={<ArtTypes />} />
-              <Route path="/artists" element={<Artists />} />
+              <Route path="/art-discovery" element={<ArtDiscovery />} />
               <Route path="/artifacts" element={<ProductListing />} />
               <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/bag" element={<Bag />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/sell-art" element={<SellArt />} />
+              <Route path="/custom-art" element={<CustomArt />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
               <Route path="/corporate-services" element={<CorporateServices />} />

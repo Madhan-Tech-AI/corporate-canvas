@@ -6,12 +6,11 @@ import SearchOverlay from './SearchOverlay';
 import CurrencySelector from '../ui/CurrencySelector';
 
 const navLinks = [
-  { name: 'Categories', href: '/categories' },
-  { name: 'Art Types', href: '/art-types' },
-  { name: 'Artists', href: '/artists' },
-  { name: 'Collections', href: '/collections' },
-  { name: 'Artifacts', href: '/artifacts' },
-  { name: 'Corporate Services', href: '/corporate-services' },
+  { name: 'Art Discovery', href: '/art-discovery' },
+  { name: 'Customize', href: '/custom-art' },
+  { name: 'Sell Arts', href: '/sell-art' },
+  { name: 'Corporate', href: '/corporate-services' },
+  { name: 'Studio', href: '/about' },
 ];
 
 export default function Navbar() {
