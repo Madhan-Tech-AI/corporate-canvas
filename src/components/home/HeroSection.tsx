@@ -23,13 +23,7 @@ export default function HeroSection() {
       {/* Parallax Background Layers */}
       <div ref={parallaxRef} className="absolute inset-0 z-0">
         {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1518005052351-41db2546e8c7?auto=format&fit=crop&w=2000&q=80"
-            alt="Corporate Art Gallery"
-            className="w-full h-full object-cover opacity-40"
-          />
-        </div>
+
 
         {/* Abstract texture layer */}
         <div className="absolute inset-0 opacity-30 mix-blend-overlay">

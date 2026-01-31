@@ -18,6 +18,9 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const isDarkPage = location.pathname === '/sell-art';
+  const textColorClass = isDarkPage && !isScrolled ? 'text-white' : 'text-charcoal';
+  const iconColorClass = isDarkPage && !isScrolled ? 'text-white' : 'text-charcoal/80';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +47,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-charcoal font-serif text-xl md:text-2xl tracking-wide hover:text-copper transition-colors duration-300"
+            className={cn(
+              "font-serif text-xl md:text-2xl tracking-wide hover:text-copper transition-colors duration-300",
+              textColorClass
+            )}
           >
             ARTÉUM
           </Link>
@@ -57,7 +63,8 @@ export default function Navbar() {
                 to={link.href}
                 className={cn(
                   'link-premium',
-                  location.pathname === link.href && 'text-copper'
+                  location.pathname === link.href && 'text-copper',
+                  isDarkPage && !isScrolled && location.pathname !== link.href && 'text-white'
                 )}
               >
                 {link.name}
@@ -73,7 +80,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="text-charcoal/80 hover:text-copper transition-colors duration-300"
+              className={cn(iconColorClass, "hover:text-copper transition-colors duration-300")}
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -81,7 +88,7 @@ export default function Navbar() {
 
             <Link
               to="/wishlist"
-              className="text-charcoal/80 hover:text-copper transition-colors duration-300 relative"
+              className={cn(iconColorClass, "hover:text-copper transition-colors duration-300 relative")}
               aria-label="Wishlist"
             >
               <Heart className="w-5 h-5" />
@@ -89,7 +96,7 @@ export default function Navbar() {
 
             <Link
               to="/bag"
-              className="text-charcoal/80 hover:text-copper transition-colors duration-300 relative"
+              className={cn(iconColorClass, "hover:text-copper transition-colors duration-300 relative")}
               aria-label="Shopping bag"
             >
               <ShoppingBag className="w-5 h-5" />
@@ -97,7 +104,7 @@ export default function Navbar() {
 
             <Link
               to="/login"
-              className="text-charcoal/80 hover:text-copper transition-colors duration-300"
+              className={cn(iconColorClass, "hover:text-copper transition-colors duration-300")}
               aria-label="Account"
             >
               <User className="w-5 h-5" />
@@ -106,7 +113,7 @@ export default function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden text-charcoal/80 hover:text-copper transition-colors duration-300"
+              className={cn(iconColorClass, "lg:hidden hover:text-copper transition-colors duration-300")}
               aria-label="Menu"
             >
               {isMobileMenuOpen ? (

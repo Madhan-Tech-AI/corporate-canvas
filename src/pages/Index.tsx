@@ -4,7 +4,7 @@ import HeroSection from '@/components/home/HeroSection';
 import CategoryPreview from '@/components/home/CategoryPreview';
 import ArtTypesPreview from '@/components/home/ArtTypesPreview';
 import FeaturedArtworks from '@/components/home/FeaturedArtworks';
-import FeaturedArtists from '@/components/home/FeaturedArtists';
+
 import CustomOrderSection from '@/components/home/CustomOrderSection';
 import StudioPromo from '@/components/home/StudioPromo';
 import SellerPromo from '@/components/home/SellerPromo';
@@ -21,7 +21,7 @@ export default function Index() {
         <CategoryPreview />
         <ArtTypesPreview />
         <FeaturedArtworks />
-        <FeaturedArtists />
+
         <CustomOrderSection />
         <StudioPromo />
         <SellerPromo />
