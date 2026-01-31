@@ -53,7 +53,7 @@ export default function FeaturedArtworks() {
                             <p className="text-caption text-copper mb-4">Curated Masterpieces</p>
                             <h2 className="text-display text-charcoal">Featured Artworks</h2>
                         </div>
-                        <Link to="/artifacts" className="link-premium hidden md:block">
+                        <Link to="/collections" className="link-premium hidden md:block">
                             View All Collection
                         </Link>
                     </div>

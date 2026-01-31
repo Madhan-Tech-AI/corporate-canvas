@@ -10,7 +10,7 @@ const collections = [
     title: 'Artifacts',
     subtitle: 'Sculptural Masterpieces',
     description: 'Hand-crafted sculptures and installations for executive spaces',
-    href: '/artifacts',
+    href: '/collections',
     image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=800&q=80',
   },
   {

@@ -21,6 +21,12 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import CorporateServices from "./pages/CorporateServices";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProductsPage from "./pages/admin/ProductsPage";
+import ApplicationsPage from "./pages/admin/ApplicationsPage";
+import { ProtectedRoute } from "./components/admin/ProtectedRoute";
+import RedirectToCollections from "./components/RedirectToCollections";
 
 const queryClient = new QueryClient();
 
@@ -36,7 +42,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/art-discovery" element={<ArtDiscovery />} />
-              <Route path="/artifacts" element={<ProductListing />} />
+              <Route path="/collections" element={<ProductListing />} />
+              <Route path="/artifacts" element={<RedirectToCollections />} />
               <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -47,6 +54,34 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
               <Route path="/corporate-services" element={<CorporateServices />} />
+
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <ProtectedRoute>
+                    <ProductsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/applications"
+                element={
+                  <ProtectedRoute>
+                    <ApplicationsPage />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

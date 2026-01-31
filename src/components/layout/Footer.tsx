@@ -4,7 +4,7 @@ import CurrencySelector from '../ui/CurrencySelector';
 const footerLinks = {
   collections: [
     { name: 'Art Discovery', href: '/art-discovery' },
-    { name: 'Artifacts', href: '/artifacts' },
+    { name: 'Collections', href: '/collections' },
   ],
   corporate: [
     { name: 'Corporate Services', href: '/corporate-services' },

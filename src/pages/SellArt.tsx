@@ -3,8 +3,42 @@ import Footer from '@/components/layout/Footer';
 import Reveal from '@/components/Reveal';
 import { Check, ArrowRight, BarChart3, Globe, ShieldCheck, Truck, Upload, Palette, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { saveSellArtApplication } from '@/lib/adminStorage';
 
 export default function SellArt() {
+    const [artistName, setArtistName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [portfolio, setPortfolio] = useState('');
+    const [biography, setBiography] = useState('');
+    const [artworkCount, setArtworkCount] = useState('');
+
+    const handleApplicationSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Save to localStorage
+        saveSellArtApplication({
+            artistName,
+            email,
+            phone,
+            portfolio,
+            biography,
+            artworkCount: parseInt(artworkCount) || 0,
+        });
+
+        toast.success('Application submitted successfully! We\'ll review it shortly.');
+
+        // Reset form
+        setArtistName('');
+        setEmail('');
+        setPhone('');
+        setPortfolio('');
+        setBiography('');
+        setArtworkCount('');
+    };
+
     const benefits = [
         {
             icon: <Globe className="w-8 h-8 text-copper" />,
@@ -122,14 +156,14 @@ export default function SellArt() {
                 <section className="section-padding bg-white overflow-hidden">
                     <div className="container-premium">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                            
+
                             {/* Dashboard Preview */}
                             <Reveal>
                                 <div className="relative perspective-1000">
                                     {/* Decorative background elements */}
                                     <div className="absolute top-10 -left-10 w-72 h-72 bg-copper/5 rounded-full blur-3xl" />
                                     <div className="absolute bottom-10 -right-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
-                                    
+
                                     <div className="relative bg-charcoal rounded-xl overflow-hidden shadow-2xl border border-white/5 transform transition-transform hover:scale-[1.01] duration-500">
                                         {/* Browser/App Header */}
                                         <div className="bg-charcoal-light px-4 py-3 border-b border-white/10 flex items-center justify-between">
@@ -259,6 +293,102 @@ export default function SellArt() {
                                 </Reveal>
                             ))}
                         </div>
+                    </div>
+                </section>
+
+                {/* Application Form Section */}
+                <section className="section-padding bg-white">
+                    <div className="container-premium max-w-3xl">
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl font-serif text-charcoal mb-4">Ready to Apply?</h2>
+                            <p className="text-charcoal/70 text-lg">Fill out the application form below and we'll review your submission within 3-5 business days.</p>
+                        </div>
+
+                        <form onSubmit={handleApplicationSubmit} className="bg-warm-white p-8 md:p-12 rounded-sm shadow-sm border border-gray-100">
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-charcoal">Artist Name *</label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={artistName}
+                                            onChange={(e) => setArtistName(e.target.value)}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                            placeholder="Your full name"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-charcoal">Email Address *</label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                            placeholder="artist@email.com"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-charcoal">Phone Number *</label>
+                                        <input
+                                            type="tel"
+                                            required
+                                            value={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                            placeholder="+1 (555) 000-0000"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-charcoal">Number of Artworks *</label>
+                                        <input
+                                            type="number"
+                                            required
+                                            min="1"
+                                            value={artworkCount}
+                                            onChange={(e) => setArtworkCount(e.target.value)}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                            placeholder="10"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-charcoal">Portfolio Link *</label>
+                                    <input
+                                        type="url"
+                                        required
+                                        value={portfolio}
+                                        onChange={(e) => setPortfolio(e.target.value)}
+                                        className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                        placeholder="https://yourportfolio.com"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-charcoal">Artist Biography *</label>
+                                    <textarea
+                                        required
+                                        value={biography}
+                                        onChange={(e) => setBiography(e.target.value)}
+                                        rows={6}
+                                        className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors resize-none"
+                                        placeholder="Tell us about your artistic journey, style, and what makes your work unique..."
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full btn-primary bg-copper text-white hover:bg-copper-dark py-3 text-lg"
+                                >
+                                    Submit Application
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </section>
 

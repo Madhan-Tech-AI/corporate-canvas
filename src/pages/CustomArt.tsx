@@ -5,6 +5,7 @@ import Reveal from '@/components/Reveal';
 import { Upload, Palette, Frame, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { saveCustomArtApplication } from '@/lib/adminStorage';
 
 type ServiceType = 'painting' | 'framing';
 
@@ -13,6 +14,9 @@ export default function CustomArt() {
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [selectedStyle, setSelectedStyle] = useState<string>('');
     const [file, setFile] = useState<File | null>(null);
+    const [customerName, setCustomerName] = useState('');
+    const [email, setEmail] = useState('');
+    const [details, setDetails] = useState('');
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -22,7 +26,27 @@ export default function CustomArt() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Save to localStorage for admin
+        saveCustomArtApplication({
+            serviceType: activeService,
+            style: selectedStyle,
+            size: selectedSize,
+            customerName,
+            email,
+            details,
+            fileUrl: file ? URL.createObjectURL(file) : undefined,
+        });
+
         toast.success("Request submitted! We'll contact you shortly.");
+
+        // Reset form
+        setSelectedSize('');
+        setSelectedStyle('');
+        setFile(null);
+        setCustomerName('');
+        setEmail('');
+        setDetails('');
     };
 
     const paintingStyles = ['Realism', 'Abstract', 'Impressionist', 'Pop Art', 'Minimalist', 'Portrait'];
@@ -171,17 +195,37 @@ export default function CustomArt() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-sm font-medium text-charcoal">Your Name</label>
-                                            <input type="text" className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors" placeholder="John Doe" required />
+                                            <input
+                                                type="text"
+                                                className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                                placeholder="John Doe"
+                                                required
+                                                value={customerName}
+                                                onChange={(e) => setCustomerName(e.target.value)}
+                                            />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-sm font-medium text-charcoal">Email Address</label>
-                                            <input type="email" className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors" placeholder="john@company.com" required />
+                                            <input
+                                                type="email"
+                                                className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors"
+                                                placeholder="john@company.com"
+                                                required
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                            />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-charcoal">Additional Details</label>
-                                        <textarea className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors h-32 resize-none" placeholder="Tell us more about your vision..." required></textarea>
+                                        <textarea
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-copper transition-colors h-32 resize-none"
+                                            placeholder="Tell us more about your vision..."
+                                            required
+                                            value={details}
+                                            onChange={(e) => setDetails(e.target.value)}
+                                        ></textarea>
                                     </div>
 
                                     <button type="submit" className="w-full btn-primary bg-charcoal text-white hover:bg-charcoal/90">

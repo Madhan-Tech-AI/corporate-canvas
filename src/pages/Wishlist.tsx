@@ -33,7 +33,7 @@ export default function Wishlist() {
                                 Start curating your personal gallery by saving artworks that speak to you.
                             </p>
                             <Link
-                                to="/artifacts"
+                                to="/collections"
                                 className="btn-primary"
                             >
                                 Discover Art

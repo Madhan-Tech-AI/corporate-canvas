@@ -7,6 +7,7 @@ import CurrencySelector from '../ui/CurrencySelector';
 
 const navLinks = [
   { name: 'Art Discovery', href: '/art-discovery' },
+  { name: 'Product', href: '/collections' },
   { name: 'Customize', href: '/custom-art' },
   { name: 'Sell Arts', href: '/sell-art' },
   { name: 'Corporate', href: '/corporate-services' },
@@ -14,22 +15,12 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const isDarkPage = location.pathname === '/sell-art';
-  const textColorClass = isDarkPage && !isScrolled ? 'text-white' : 'text-charcoal';
-  const iconColorClass = isDarkPage && !isScrolled ? 'text-white' : 'text-charcoal/80';
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const isDarkPage = false; // Forced light theme for consistency as requested
+  const textColorClass = 'text-charcoal';
+  const iconColorClass = 'text-charcoal/80';
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -38,12 +29,9 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-premium',
-          isScrolled ? 'navbar-solid py-4' : 'navbar-transparent py-6'
-        )}
+        className="fixed top-0 left-0 right-0 z-50 bg-[#FDFBF7] border-b border-gray-100 py-4"
       >
-        <div className="container-premium flex items-center justify-between">
+        <div className="w-full px-6 flex items-center justify-between">
           {/* Logo */}
           <Link
             to="/"
@@ -63,8 +51,7 @@ export default function Navbar() {
                 to={link.href}
                 className={cn(
                   'link-premium',
-                  location.pathname === link.href && 'text-copper',
-                  isDarkPage && !isScrolled && location.pathname !== link.href && 'text-white'
+                  location.pathname === link.href && 'text-copper'
                 )}
               >
                 {link.name}

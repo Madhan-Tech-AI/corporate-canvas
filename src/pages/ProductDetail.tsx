@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, Heart, Share2, ShieldCheck } from 'lucide-react';
 import AuthModal from '@/components/auth/AuthModal';
+import ProductReviews from '@/components/product/ProductReviews';
 
 const productData = {
   id: 1,
@@ -67,7 +68,7 @@ export default function ProductDetail() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-32">
         <div className="container-premium">
           {/* Breadcrumb */}
@@ -80,7 +81,7 @@ export default function ProductDetail() {
               </li>
               <li className="text-muted-foreground">/</li>
               <li>
-                <Link to="/artifacts" className="text-muted-foreground hover:text-cream transition-colors">
+                <Link to="/collections" className="text-muted-foreground hover:text-cream transition-colors">
                   {productData.category}
                 </Link>
               </li>
@@ -100,7 +101,7 @@ export default function ProductDetail() {
                   alt={productData.name}
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Navigation Arrows */}
                 <button
                   onClick={prevImage}
@@ -185,6 +186,9 @@ export default function ProductDetail() {
               </div>
             </div>
           </div>
+
+          {/* Reviews Section */}
+          <ProductReviews />
 
           {/* Related Products */}
           <section className="section-padding">

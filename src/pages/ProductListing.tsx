@@ -1,296 +1,832 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
-import { Filter, Grid, LayoutGrid, X, Heart } from 'lucide-react';
+import { Heart, X, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCurrency } from '@/context/CurrencyContext';
 import { useWishlist } from '@/context/WishlistContext';
+import styled from 'styled-components';
 
-const categories = {
-  artifacts: {
-    title: 'Artifacts',
-    subtitle: 'Sculptural Masterpieces',
-    description: 'Hand-crafted sculptures and installations for executive spaces.',
-  },
-  'canvas-paintings': {
-    title: 'Canvas Paintings',
-    subtitle: 'Contemporary Vision',
-    description: 'Original paintings by acclaimed artists for corporate collections.',
-  },
-  'custom-art': {
-    title: 'Custom Corporate Art',
-    subtitle: 'Bespoke Creations',
-    description: 'Commissioned artworks tailored to your brand identity.',
-  },
-};
+// UI Components
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 
-const products = [
-  { id: 1, name: 'Bronze Meridian Sculpture', category: 'Artifacts', price: 245000, image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=600&q=80', tag: 'Boardroom Fit' },
-  { id: 2, name: 'Abstract Horizon No. 7', category: 'Canvas Paintings', price: 185000, image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=600&q=80', tag: 'Corporate Collection' },
-  { id: 3, name: 'Marble Essence Installation', category: 'Custom Art', price: null, image: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=600&q=80', tag: 'Luxury Gifting' },
-  { id: 4, name: 'Geometric Flow Series', category: 'Canvas Paintings', price: 125000, image: 'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=600&q=80', tag: 'Office Interiors' },
-  { id: 5, name: 'Obsidian Wave', category: 'Artifacts', price: 320000, image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=600&q=80', tag: 'Executive Suite' },
-  { id: 6, name: 'Chromatic Depth III', category: 'Canvas Paintings', price: 95000, image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=600&q=80', tag: 'Corporate Collection' },
-  { id: 7, name: 'Brass Constellation', category: 'Artifacts', price: 175000, image: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=600&q=80', tag: 'Reception Area' },
-  { id: 8, name: 'Minimalist Gradient', category: 'Canvas Paintings', price: 85000, image: 'https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=600&q=80', tag: 'Office Interiors' },
+const StyledCard = styled.div`
+  width: 100%;
+  height: 100%;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 4px 6px -1px, rgba(0, 0, 0, 0.02) 0px 2px 4px -1px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+  }
+`;
+
+// --- Enhanced Mock Data ---
+interface Product {
+  id: number;
+  name: string;
+  category: string; // "Collection"
+  price: number | null;
+  image: string;
+  tag?: string;
+  medium: string;
+  size: string;
+  orientation: string;
+  availability: string;
+}
+
+const products: Product[] = [
+  {
+    id: 1,
+    name: 'Bronze Meridian Sculpture',
+    category: 'Artifacts',
+    price: 245000,
+    image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=600&q=80',
+    tag: 'Boardroom Fit',
+    medium: 'Bronze',
+    size: 'Medium',
+    orientation: 'Portrait',
+    availability: 'In Stock'
+  },
+  {
+    id: 2,
+    name: 'Abstract Horizon No. 7',
+    category: 'Canvas Paintings',
+    price: 185000,
+    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=600&q=80',
+    tag: 'Corporate Collection',
+    medium: 'Acrylic',
+    size: 'Large',
+    orientation: 'Landscape',
+    availability: 'In Stock'
+  },
+  {
+    id: 3,
+    name: 'Marble Essence Installation',
+    category: 'Custom Art',
+    price: null,
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=600&q=80',
+    tag: 'Luxury Gifting',
+    medium: 'Marble',
+    size: 'Large',
+    orientation: 'Square',
+    availability: 'Made to Order'
+  },
+  {
+    id: 4,
+    name: 'Geometric Flow Series',
+    category: 'Canvas Paintings',
+    price: 125000,
+    image: 'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=600&q=80',
+    tag: 'Office Interiors',
+    medium: 'Oil',
+    size: 'Medium',
+    orientation: 'Portrait',
+    availability: 'In Stock'
+  },
+  {
+    id: 5,
+    name: 'Obsidian Wave',
+    category: 'Artifacts',
+    price: 320000,
+    image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=600&q=80',
+    tag: 'Executive Suite',
+    medium: 'Stone',
+    size: 'Small',
+    orientation: 'Landscape',
+    availability: 'In Stock'
+  },
+  {
+    id: 6,
+    name: 'Chromatic Depth III',
+    category: 'Canvas Paintings',
+    price: 95000,
+    image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=600&q=80',
+    tag: 'Corporate Collection',
+    medium: 'Acrylic',
+    size: 'Small',
+    orientation: 'Square',
+    availability: 'In Stock'
+  },
+  {
+    id: 7,
+    name: 'Brass Constellation',
+    category: 'Artifacts',
+    price: 175000,
+    image: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=600&q=80',
+    tag: 'Reception Area',
+    medium: 'Brass',
+    size: 'Medium',
+    orientation: 'Portrait',
+    availability: 'In Stock'
+  },
+  {
+    id: 8,
+    name: 'Minimalist Gradient',
+    category: 'Canvas Paintings',
+    price: 85000,
+    image: 'https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=600&q=80',
+    tag: 'Office Interiors',
+    medium: 'Mixed Media',
+    size: 'Medium',
+    orientation: 'Landscape',
+    availability: 'In Stock'
+  },
 ];
 
-const filters = {
-  category: ['Abstract', 'Landscape', 'Portrait', 'Minimal', 'Contemporary', 'Cultural'],
-  artType: ['Oil on Canvas', 'Acrylic', 'Watercolor', 'Mixed Media', 'Sculpture', 'Photography'],
-  price: ['Under ₹50,000', '₹50,000 - ₹2,00,000', '₹2,00,000 - ₹5,00,000', 'Above ₹5,00,000'],
-  size: ['Small (< 24")', 'Medium (24" - 48")', 'Large (48" - 72")', 'Oversized (> 72")'],
+// --- Filter Options ---
+const filterOptions = {
+  collections: ['Artifacts', 'Canvas Paintings', 'Custom Art', 'Top Rated', 'New Collection'],
+  medium: ['Acrylic', 'Oil', 'Bronze', 'Marble', 'Brass', 'Stone', 'Mixed Media'],
+  size: ['Small', 'Medium', 'Large'],
   orientation: ['Landscape', 'Portrait', 'Square'],
-  artist: ['Eleanor Vance', 'Julian Thorne', 'Amara Singh', 'Marcus Reed', 'Sarah Jenkins', 'David Kim'],
-  availability: ['Ready to Ship', 'Made to Order'],
-  colors: [
-    { name: 'Warm', color: 'bg-orange-500' },
-    { name: 'Cool', color: 'bg-blue-500' },
-    { name: 'Neutral', color: 'bg-stone-500' },
-    { name: 'Monochrome', color: 'bg-black' },
-    { name: 'Vibrant', color: 'bg-pink-500' },
-  ]
+  availability: ['In Stock', 'Made to Order'],
 };
 
 export default function ProductListing() {
-  const { category } = useParams();
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [gridView, setGridView] = useState<'large' | 'small'>('large');
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  // State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState('featured');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
+  const [expandedSections, setExpandedSections] = useState<string[]>(['collections', 'medium']);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Adjust based on grid layout (4 cols x 2 rows or similar)
+
+  // Multi-select filters
+  const [selectedFilters, setSelectedFilters] = useState({
+    collections: [] as string[],
+    medium: [] as string[],
+    size: [] as string[],
+    orientation: [] as string[],
+    availability: [] as string[],
+  });
+
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const { formatPrice } = useCurrency();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
-  // Filter states
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
-
-  const toggleFilter = (section: string, value: string) => {
+  // Handlers
+  const handleFilterChange = (category: keyof typeof selectedFilters, value: string) => {
     setSelectedFilters(prev => {
-      const current = prev[section] || [];
+      const current = prev[category];
       const updated = current.includes(value)
         ? current.filter(item => item !== value)
         : [...current, value];
-      return { ...prev, [section]: updated };
+      return { ...prev, [category]: updated };
     });
   };
 
-  const categoryInfo = category ? categories[category as keyof typeof categories] : null;
-  const pageTitle = categoryInfo?.title || 'Collect Artifacts';
+  const removeFilter = (category: keyof typeof selectedFilters, value: string) => {
+    handleFilterChange(category, value);
+  };
 
+  const clearAllFilters = () => {
+    setSelectedFilters({
+      collections: [],
+      medium: [],
+      size: [],
+      orientation: [],
+      availability: [],
+    });
+    setPriceRange([0, 500000]);
+    setSearchQuery('');
+    setCurrentPage(1);
+  };
+
+  const activeFilterCount = Object.values(selectedFilters).flat().length;
+
+  // Filtering Logic
+  const filteredProducts = useMemo(() => {
+    let result = products;
+
+    // Collections (Category)
+    if (selectedFilters.collections.length > 0) {
+      result = result.filter(p => selectedFilters.collections.includes(p.category) || (p.tag && selectedFilters.collections.includes(p.tag)));
+    }
+
+    // Medium
+    if (selectedFilters.medium.length > 0) {
+      result = result.filter(p => selectedFilters.medium.includes(p.medium));
+    }
+
+    // Size
+    if (selectedFilters.size.length > 0) {
+      result = result.filter(p => selectedFilters.size.includes(p.size));
+    }
+
+    // Orientation
+    if (selectedFilters.orientation.length > 0) {
+      result = result.filter(p => selectedFilters.orientation.includes(p.orientation));
+    }
+
+    // Availability
+    if (selectedFilters.availability.length > 0) {
+      result = result.filter(p => selectedFilters.availability.includes(p.availability));
+    }
+
+    // Price
+    result = result.filter(product => {
+      if (product.price === null) return true;
+      return product.price >= priceRange[0] && product.price <= priceRange[1];
+    });
+
+    // Search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query) ||
+        (product.tag && product.tag.toLowerCase().includes(query))
+      );
+    }
+
+    // Sorting
+    if (sortOption === 'price-low-high') {
+      result = [...result].sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortOption === 'price-high-low') {
+      result = [...result].sort((a, b) => (b.price || 0) - (a.price || 0));
+    }
+
+    return result;
+  }, [selectedFilters, priceRange, searchQuery, sortOption]);
+
+
+  // Shared Filter Content Component
   const FilterContent = () => (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between lg:hidden pb-4 border-b border-gray-100 mb-4">
-        <span className="text-lg font-serif text-charcoal">Filters</span>
-        <button onClick={() => setIsMobileFilterOpen(false)} className="p-2">
-          <X className="w-5 h-5 text-charcoal" />
-        </button>
-      </div>
+    <div className="space-y-6">
+      <Accordion type="multiple" value={expandedSections} onValueChange={setExpandedSections} className="w-full">
 
-      {['category', 'artType', 'price', 'size', 'artist', 'availability', 'orientation'].map((section) => (
-        <div key={section} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
-          <h4 className="text-sm font-serif text-charcoal mb-4 capitalize">
-            {section.replace(/([A-Z])/g, ' $1').trim()}
-          </h4>
-          <div className="space-y-2.5">
-            {filters[section as keyof typeof filters].map((value: string | any) => (
-              <label key={value} className="flex items-center gap-3 cursor-pointer group">
-                <div className="relative flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={selectedFilters[section]?.includes(value)}
-                    onChange={() => toggleFilter(section, value)}
-                    className="peer w-4 h-4 rounded-sm border-gray-300 text-copper focus:ring-copper/50"
+        {/* Collections */}
+        <AccordionItem value="collections" className="border-b-charcoal/10">
+          <AccordionTrigger className="hover:no-underline text-charcoal font-medium">Collections</AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-3 pt-2">
+              {filterOptions.collections.map(option => (
+                <div key={option} className="flex items-center space-x-3">
+                  <Checkbox
+                    id={`col-${option}`}
+                    checked={selectedFilters.collections.includes(option)}
+                    onCheckedChange={() => handleFilterChange('collections', option)}
+                    className="border-charcoal/30 data-[state=checked]:bg-charcoal data-[state=checked]:border-charcoal rounded-[4px]"
                   />
+                  <label htmlFor={`col-${option}`} className="text-sm text-charcoal/80 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none">
+                    {option}
+                  </label>
                 </div>
-                <span className={cn(
-                  "text-sm transition-colors duration-300",
-                  selectedFilters[section]?.includes(value) ? "text-charcoal font-medium" : "text-charcoal/70 group-hover:text-charcoal"
-                )}>
-                  {value}
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
-      ))}
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
 
-      {/* Color Filter */}
-      <div>
-        <h4 className="text-sm font-serif text-charcoal mb-4">Color Tone</h4>
-        <div className="flex flex-wrap gap-3">
-          {filters.colors.map((color) => (
-            <button
-              key={color.name}
-              onClick={() => toggleFilter('colors', color.name)}
-              className={cn(
-                "w-8 h-8 rounded-full border border-gray-200 shadow-sm flex items-center justify-center transition-all duration-300 hover:scale-110",
-                selectedFilters['colors']?.includes(color.name) ? "ring-2 ring-offset-2 ring-copper" : ""
-              )}
-              title={color.name}
-            >
-              <span className={cn("w-full h-full rounded-full", color.color)}></span>
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* Medium */}
+        <AccordionItem value="medium" className="border-b-charcoal/10">
+          <AccordionTrigger className="hover:no-underline text-charcoal font-medium">Medium</AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-3 pt-2">
+              {filterOptions.medium.map(option => (
+                <div key={option} className="flex items-center space-x-3">
+                  <Checkbox
+                    id={`med-${option}`}
+                    checked={selectedFilters.medium.includes(option)}
+                    onCheckedChange={() => handleFilterChange('medium', option)}
+                    className="border-charcoal/30 data-[state=checked]:bg-charcoal data-[state=checked]:border-charcoal rounded-[4px]"
+                  />
+                  <label htmlFor={`med-${option}`} className="text-sm text-charcoal/80 leading-none cursor-pointer select-none">
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
 
-      <div className="pt-6">
-        <button
-          onClick={() => setSelectedFilters({})}
-          className="text-sm text-charcoal/60 hover:text-charcoal underline underline-offset-4 transition-colors w-full text-left"
-          disabled={Object.keys(selectedFilters).length === 0}
-        >
-          Clear All Filters
-        </button>
-      </div>
+        {/* Size */}
+        <AccordionItem value="size" className="border-b-charcoal/10">
+          <AccordionTrigger className="hover:no-underline text-charcoal font-medium">Size</AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-3 pt-2">
+              {filterOptions.size.map(option => (
+                <div key={option} className="flex items-center space-x-3">
+                  <Checkbox
+                    id={`size-${option}`}
+                    checked={selectedFilters.size.includes(option)}
+                    onCheckedChange={() => handleFilterChange('size', option)}
+                    className="border-charcoal/30 data-[state=checked]:bg-charcoal data-[state=checked]:border-charcoal rounded-[4px]"
+                  />
+                  <label htmlFor={`size-${option}`} className="text-sm text-charcoal/80 leading-none cursor-pointer select-none">
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Orientation */}
+        <AccordionItem value="orientation" className="border-b-charcoal/10">
+          <AccordionTrigger className="hover:no-underline text-charcoal font-medium">Orientation</AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-3 pt-2">
+              {filterOptions.orientation.map(option => (
+                <div key={option} className="flex items-center space-x-3">
+                  <Checkbox
+                    id={`orient-${option}`}
+                    checked={selectedFilters.orientation.includes(option)}
+                    onCheckedChange={() => handleFilterChange('orientation', option)}
+                    className="border-charcoal/30 data-[state=checked]:bg-charcoal data-[state=checked]:border-charcoal rounded-[4px]"
+                  />
+                  <label htmlFor={`orient-${option}`} className="text-sm text-charcoal/80 leading-none cursor-pointer select-none">
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Availability */}
+        <AccordionItem value="availability" className="border-b-0">
+          <AccordionTrigger className="hover:no-underline text-charcoal font-medium">Availability</AccordionTrigger>
+          <AccordionContent>
+            <div className="flex flex-wrap gap-2 pt-2">
+              {filterOptions.availability.map(option => (
+                <button
+                  key={option}
+                  onClick={() => handleFilterChange('availability', option)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200",
+                    selectedFilters.availability.includes(option)
+                      ? "bg-charcoal text-white border-charcoal"
+                      : "bg-transparent text-charcoal/70 border-gray-200 hover:border-charcoal/50"
+                  )}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+      </Accordion>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#FDFBF7]">
       <Navbar />
 
-      <main className="pt-32 pb-24">
-        <section className="container-premium">
-          <div className="flex flex-col lg:flex-row gap-12">
+      {/* Top Bar Spacer */}
+      <div className="h-20" />
 
-            {/* Sidebar - Desktop */}
-            <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto pr-4 scrollbar-hide">
-              <FilterContent />
-            </aside>
+      <main className="container mx-auto px-6 py-8">
 
-            {/* Mobile Filter Drawer */}
-            <div className={cn(
-              "fixed inset-0 z-50 bg-black/50 lg:hidden transition-opacity duration-300",
-              isMobileFilterOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-            )}>
-              <div className={cn(
-                "absolute inset-y-0 right-0 w-[300px] bg-white p-6 overflow-y-auto transform transition-transform duration-300",
-                isMobileFilterOpen ? "translate-x-0" : "translate-x-full"
-              )}>
-                <FilterContent />
-              </div>
+        {/* Header Section: Title & Controls */}
+        <div className="flex flex-col gap-6 mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-serif text-charcoal mb-1">Gallery Collection</h1>
+              <p className="text-charcoal/50 text-sm">Curated artifacts and fine art for corporate spaces</p>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1">
-              {/* Header & Toolbar */}
-              <div className="mb-8">
-                <p className="text-caption text-copper mb-2">
-                  {categoryInfo?.subtitle || 'Curated Selection'}
-                </p>
-                <h1 className="text-4xl md:text-5xl font-serif text-charcoal mb-4">
-                  {pageTitle}
-                </h1>
-                <p className="text-charcoal/70 max-w-2xl mb-8 leading-relaxed">
-                  {categoryInfo ? categoryInfo.description : 'Discover our exclusive collection of hand-picked artworks designed to elevate your space.'}
-                </p>
+            {/* Top Controls: Search & Price & Sort */}
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
 
-                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-                  <button
-                    onClick={() => setIsMobileFilterOpen(true)}
-                    className="lg:hidden flex items-center gap-2 text-sm font-medium tracking-wide uppercase text-charcoal"
-                  >
-                    <Filter className="w-4 h-4" />
-                    <span>Filters</span>
-                  </button>
-                  <p className="hidden lg:block text-charcoal/60 text-sm">{products.length} Results</p>
-
-                  <div className="flex items-center gap-4">
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setGridView('large')}
-                        className={cn(
-                          'p-2 transition-colors duration-300',
-                          gridView === 'large' ? 'text-charcoal' : 'text-charcoal/40 hover:text-charcoal'
-                        )}
-                      >
-                        <Grid className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setGridView('small')}
-                        className={cn(
-                          'p-2 transition-colors duration-300',
-                          gridView === 'small' ? 'text-charcoal' : 'text-charcoal/40 hover:text-charcoal'
-                        )}
-                      >
-                        <LayoutGrid className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
+              {/* Search */}
+              <div
+                className={cn(
+                  "relative transition-all duration-500 ease-out",
+                  isSearchFocused ? "w-full md:w-64" : "w-full md:w-48"
+                )}
+              >
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-100 ring-1 ring-gray-200/50 rounded-full shadow-sm focus:shadow-md focus:ring-charcoal/20 transition-all outline-none text-charcoal placeholder:text-charcoal/30 text-sm"
+                />
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal/40">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
                 </div>
               </div>
 
-              {/* Products Grid */}
-              <div className={cn(
-                'grid gap-x-6 gap-y-10',
-                gridView === 'large' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'
-              )}>
-                {products.map((product) => (
-                  <Link
-                    key={product.id}
-                    to={`/products/${product.id}`}
-                    className="group"
-                    onMouseEnter={() => setHoveredId(product.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                  >
-                    <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-charcoal-light mb-4">
+              {/* Price Range Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className={cn(
+                    "hidden lg:flex items-center gap-3 px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 group",
+                    priceRange[0] > 0 || priceRange[1] < 500000
+                      ? "bg-charcoal text-white border-charcoal shadow-lg shadow-charcoal/10"
+                      : "bg-white border-gray-200 text-charcoal/80 hover:border-gray-300 hover:shadow-md"
+                  )}>
+                    <span className={cn(
+                      "text-xs uppercase tracking-wider font-semibold",
+                      priceRange[0] > 0 || priceRange[1] < 500000 ? "text-white/70" : "text-charcoal/50"
+                    )}>Price</span>
+                    <span className="h-4 w-[1px] bg-current opacity-20" />
+                    <span>
+                      {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+                    </span>
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform duration-300 group-data-[state=open]:rotate-180",
+                      priceRange[0] > 0 || priceRange[1] < 500000 ? "text-white/70" : "text-charcoal/40"
+                    )} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[360px] p-0 bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden" align="end" sideOffset={8}>
+                  {/* Header */}
+                  <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                    <h4 className="font-serif text-lg text-charcoal">Price Range</h4>
+                    <button
+                      onClick={() => setPriceRange([0, 500000])}
+                      className="text-xs font-medium text-charcoal/50 hover:text-red-500 transition-colors uppercase tracking-wide"
+                    >
+                      Reset
+                    </button>
+                  </div>
+
+                  <div className="p-6 space-y-8">
+                    {/* Histogram & Slider */}
+                    <div className="space-y-4">
+                      {/* Histogram */}
+                      <div className="h-16 flex items-end gap-1 px-1">
+                        {[10, 25, 40, 30, 60, 85, 45, 60, 35, 20, 15, 5].map((h, i) => (
+                          <div
+                            key={i}
+                            className={cn(
+                              "flex-1 rounded-t-sm transition-colors duration-300",
+                              // Highlight bars within range approximately
+                              (i / 11) * 1000000 >= priceRange[0] && (i / 11) * 1000000 <= priceRange[1]
+                                ? "bg-charcoal/80"
+                                : "bg-charcoal/10"
+                            )}
+                            style={{ height: `${h}%` }}
+                          />
+                        ))}
+                      </div>
+
+                      <Slider
+                        defaultValue={[0, 500000]}
+                        max={1000000}
+                        step={10000}
+                        value={priceRange}
+                        onValueChange={(val) => setPriceRange(val as [number, number])}
+                        className="py-2"
+                      />
+                    </div>
+
+                    {/* Manual Inputs */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase text-charcoal/40 tracking-wider font-bold">Min Price</label>
+                        <div className="relative group">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal/40 text-sm font-serif">₹</span>
+                          <input
+                            type="number"
+                            value={priceRange[0]}
+                            onChange={(e) => {
+                              const val = Math.min(Number(e.target.value), priceRange[1]);
+                              setPriceRange([val, priceRange[1]]);
+                            }}
+                            className="w-full pl-7 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-charcoal font-medium focus:outline-none focus:ring-2 focus:ring-charcoal/10 focus:border-charcoal/50 transition-all hover:bg-gray-50/80"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase text-charcoal/40 tracking-wider font-bold">Max Price</label>
+                        <div className="relative group">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal/40 text-sm font-serif">₹</span>
+                          <input
+                            type="number"
+                            value={priceRange[1]}
+                            onChange={(e) => {
+                              const val = Math.max(Number(e.target.value), priceRange[0]);
+                              setPriceRange([priceRange[0], val]);
+                            }}
+                            className="w-full pl-7 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-charcoal font-medium focus:outline-none focus:ring-2 focus:ring-charcoal/10 focus:border-charcoal/50 transition-all hover:bg-gray-50/80"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+
+              {/* Mobile Filter Trigger */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <button className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-charcoal hover:bg-gray-50 transition-colors">
+                    <SlidersHorizontal className="w-4 h-4" />
+                    Filters
+                    {activeFilterCount > 0 && (
+                      <span className="bg-charcoal text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full ml-1">
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] overflow-y-auto">
+                  <SheetHeader className="mb-6 text-left">
+                    <SheetTitle className="text-xl font-serif">Filters</SheetTitle>
+                    <SheetDescription>Refine your search</SheetDescription>
+                  </SheetHeader>
+
+                  {/* Mobile Price Range */}
+                  <div className="mb-6 px-1">
+                    <h3 className="text-sm font-medium mb-4">Price Range</h3>
+                    <Slider
+                      defaultValue={[0, 500000]}
+                      max={1000000}
+                      step={5000}
+                      value={priceRange}
+                      onValueChange={(val) => setPriceRange(val as [number, number])}
+                      className="mb-4"
+                    />
+                    <div className="flex justify-between text-xs text-charcoal/70 font-mono">
+                      <span>{formatPrice(priceRange[0])}</span>
+                      <span>{formatPrice(priceRange[1])}</span>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-gray-100 my-4" />
+
+                  <FilterContent />
+
+                  <div className="mt-8 pt-4 border-t border-gray-100">
+                    <button onClick={clearAllFilters} className="w-full py-2 text-sm text-charcoal/60 hover:text-charcoal mb-3">Clear All</button>
+                    <SheetTrigger asChild>
+                      <button className="w-full py-3 bg-charcoal text-white rounded-lg text-sm font-medium hover:bg-charcoal/90">Show Results</button>
+                    </SheetTrigger>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+
+              {/* Sort */}
+              <div className="relative group">
+                <button className="flex items-center gap-2 px-4 py-2 bg-transparent hover:bg-gray-100/50 rounded-lg text-sm font-medium text-charcoal transition-colors">
+                  <span className="text-charcoal/50">Sort:</span>
+                  {sortOption === 'featured' && 'Featured'}
+                  {sortOption === 'price-low-high' && 'Price: Low -> High'}
+                  {sortOption === 'price-high-low' && 'Price: High -> Low'}
+                  <ChevronDown className="w-4 h-4 opacity-50" />
+                </button>
+
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right z-50 overflow-hidden">
+                  <button onClick={() => setSortOption('featured')} className="w-full text-left px-4 py-3 text-sm text-charcoal/80 hover:bg-gray-50 transition-colors">Featured</button>
+                  <button onClick={() => setSortOption('price-low-high')} className="w-full text-left px-4 py-3 text-sm text-charcoal/80 hover:bg-gray-50 transition-colors">Price: Low to High</button>
+                  <button onClick={() => setSortOption('price-high-low')} className="w-full text-left px-4 py-3 text-sm text-charcoal/80 hover:bg-gray-50 transition-colors">Price: High to Low</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Active Filters Bar */}
+          {(activeFilterCount > 0 || searchQuery) && (
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100/50">
+              <span className="text-xs text-charcoal/40 mr-2 uppercase tracking-wider">Active Filters:</span>
+
+              {/* Search Chip */}
+              {searchQuery && (
+                <Badge variant="secondary" className="bg-charcoal/5 hover:bg-charcoal/10 text-charcoal gap-1 pr-1 font-normal">
+                  "{searchQuery}"
+                  <button onClick={() => setSearchQuery('')} className="p-0.5 hover:bg-charcoal/10 rounded-full"><X className="w-3 h-3" /></button>
+                </Badge>
+              )}
+
+              {/* Dynamic Chips */}
+              {Object.entries(selectedFilters).map(([category, values]) => (
+                values.map(val => (
+                  <Badge key={`${category}-${val}`} variant="secondary" className="bg-charcoal/5 hover:bg-charcoal/10 text-charcoal gap-1 pr-1 font-normal capitalize">
+                    {val}
+                    <button onClick={() => removeFilter(category as keyof typeof selectedFilters, val)} className="p-0.5 hover:bg-charcoal/10 rounded-full">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))
+              ))}
+
+              <button onClick={clearAllFilters} className="text-xs text-red-500 hover:text-red-600 underline ml-2">Clear All</button>
+            </div>
+          )}
+        </div>
+
+
+        <div className="flex flex-col lg:flex-row gap-10">
+
+          {/* Desktop Sidebar (Sticky) */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="sticky top-28 bg-white/50 backdrop-blur-md p-6 rounded-2xl border border-white shadow-sm">
+              <FilterContent />
+            </div>
+          </aside>
+
+
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Grid */}
+            <div className={cn(
+              'grid gap-x-6 gap-y-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+            )}>
+
+              {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                <Link key={product.id} to={`/products/${product.id}`} target="_blank" rel="noopener noreferrer" className="group block h-full">
+                  <StyledCard>
+                    <div className="relative aspect-[4/5] overflow-hidden bg-gray-50">
                       <img
                         src={product.image}
                         alt={product.name}
-                        className={cn(
-                          'w-full h-full object-cover transition-transform duration-700 ease-premium',
-                          hoveredId === product.id ? 'scale-105' : 'scale-100'
-                        )}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       />
-                      <span className="absolute top-4 left-4 text-xs tracking-widest uppercase bg-obsidian/80 text-cream px-3 py-1.5 backdrop-blur-sm">
-                        {product.tag}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (isInWishlist(product.id)) {
-                            removeFromWishlist(product.id);
-                          } else {
-                            addToWishlist({
-                              id: product.id,
-                              name: product.name,
-                              price: product.price,
-                              image: product.image,
-                              category: product.category,
-                              artist: 'Unknown' // Mock data missing artist, defaulted
-                            });
-                          }
-                        }}
-                        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white transition-colors duration-300 group/heart"
-                      >
-                        <Heart
-                          className={cn(
-                            "w-5 h-5 transition-colors duration-300",
-                            isInWishlist(product.id) ? "fill-red-500 text-red-500" : "text-white group-hover/heart:text-red-500"
-                          )}
-                        />
-                      </button>
+
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
+
+                      {/* Hover Actions: Add to Bag & Buy Now */}
+                      <div className="absolute inset-x-4 bottom-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex flex-col gap-2 opacity-0 group-hover:opacity-100 pb-2 z-10">
+                        <Link
+                          to={`/products/${product.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 bg-white text-charcoal font-medium text-xs uppercase tracking-wider text-center hover:bg-white/90 shadow-lg rounded-sm transition-colors"
+                        >
+                          Add to Bag
+                        </Link>
+                        <Link
+                          to={`/products/${product.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 bg-charcoal text-white font-medium text-xs uppercase tracking-wider text-center hover:bg-charcoal/90 shadow-lg rounded-sm transition-colors"
+                        >
+                          Buy Now
+                        </Link>
+                      </div>
+
+                      {/* Badges/Tags */}
+                      <div className="absolute top-3 left-3 flex flex-col gap-2">
+                        {product.availability === 'Made to Order' && (
+                          <span className="bg-white/90 backdrop-blur text-charcoal text-[10px] uppercase tracking-wider px-2 py-1 rounded-sm shadow-sm">
+                            Made to Order
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (isInWishlist(product.id)) {
+                              removeFromWishlist(product.id);
+                            } else {
+                              addToWishlist({
+                                id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                image: product.image,
+                                category: product.category,
+                                artist: 'Unknown'
+                              });
+                            }
+                          }}
+                          className="bg-white/90 backdrop-blur-sm text-charcoal p-2 rounded-full shadow-lg hover:bg-copper hover:text-white transition-all duration-300"
+                        >
+                          <Heart className={cn("w-4 h-4", isInWishlist(product.id) && "fill-current text-red-500 hover:text-white")} />
+                        </button>
+                      </div>
+
+                      {product.tag && (
+                        <div className="absolute bottom-3 left-3 group-hover:opacity-0 transition-opacity duration-300">
+                          <span className="bg-white/80 backdrop-blur-md text-charcoal text-[10px] uppercase tracking-wider px-2 py-1 rounded-sm shadow-sm">
+                            {product.tag}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <p className="text-xs font-medium text-copper mb-1">{product.category}</p>
-                      <h3 className="text-charcoal font-serif text-lg mb-2 group-hover:text-copper transition-colors duration-300">
-                        {product.name}
-                      </h3>
-                      <p className="text-charcoal/70 text-sm">
-                        {product.price ? formatPrice(product.price) : 'On Request'}
-                      </p>
+
+                    <div className="p-5 space-y-3 bg-white">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-[10px] font-medium text-charcoal/50 uppercase tracking-wider mb-1.5">{product.category} • {product.medium}</p>
+                          <h3 className="text-lg font-serif text-charcoal leading-tight line-clamp-2 min-h-[3rem]">
+                            {product.name}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-sm font-medium text-charcoal">
+                          {product.price ? formatPrice(product.price) : 'On Request'}
+                        </span>
+                        <span className="text-[10px] text-charcoal/50 uppercase tracking-wide bg-gray-50 px-2 py-1 rounded-full">
+                          {product.size}
+                        </span>
+                      </div>
                     </div>
-                  </Link>
-                ))}
-              </div>
+                  </StyledCard>
+                </Link>
+              ))}
             </div>
 
+            {filteredProducts.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <SlidersHorizontal className="w-8 h-8 text-charcoal/30" />
+                </div>
+                <h3 className="text-lg font-medium text-charcoal mb-2">No artworks found</h3>
+                <p className="text-charcoal/50 max-w-sm mb-6">Try adjusting your filters or search query to find what you're looking for.</p>
+                <button onClick={clearAllFilters} className="text-sm font-medium text-copper hover:text-copper/80 underline">
+                  Clear all filters
+                </button>
+              </div>
+            )}
+
+
+            {/* Pagination Controls */}
+            {filteredProducts.length > itemsPerPage && (
+              <div className="mt-12 flex justify-center items-center gap-4">
+                <button
+                  onClick={() => {
+                    setCurrentPage(p => Math.max(1, p - 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-full border border-gray-200 text-charcoal/70 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                <span className="text-sm font-medium text-charcoal/80 font-serif">
+                  Page {currentPage} of {Math.ceil(filteredProducts.length / itemsPerPage)}
+                </span>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / itemsPerPage), p + 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={currentPage === Math.ceil(filteredProducts.length / itemsPerPage)}
+                  className="p-2 rounded-full border border-gray-200 text-charcoal/70 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+
+
+
           </div>
-        </section>
+        </div>
       </main>
+
+      {/* Custom Art Banner - Full Width */}
+      <section className="container mx-auto px-6 mb-16">
+        <div className="bg-[#F4F1EA] rounded-lg p-8 md:p-12 text-center border border-[#EBE5D9]">
+          <h2 className="text-2xl md:text-3xl font-serif text-charcoal mb-4">
+            Custom Art & Framing, Tailored to You
+          </h2>
+          <p className="text-charcoal/70 max-w-2xl mx-auto mb-8 font-light leading-relaxed">
+            From concept to installation, we create bespoke artworks that embody your corporate identity, values, and vision.
+          </p>
+          <Link to="/custom-art">
+            <button className="px-8 py-3 bg-charcoal text-white text-sm uppercase tracking-widest hover:bg-charcoal/90 transition-colors shadow-lg rounded-sm">
+              Start a Custom Request
+            </button>
+          </Link>
+        </div>
+      </section>
 
       <Footer />
     </div>
