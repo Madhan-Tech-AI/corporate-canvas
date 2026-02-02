@@ -8,13 +8,10 @@ import {
     Edit,
     Trash2,
     Filter,
-    X
+    X,
+    Loader2
 } from 'lucide-react';
-import {
-    getProducts,
-    deleteProduct,
-    Product
-} from '@/lib/adminStorage';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import ProductForm from '../../components/admin/ProductForm';
 import {
@@ -29,14 +26,15 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function ProductsPage() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<any[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedType, setSelectedType] = useState<string>('all');
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [editingProduct, setEditingProduct] = useState<any | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const productTypes = ['all', 'Painting', 'Sculpture', 'Print', 'Digital Art', 'Photography', 'Mixed Media'];
 
@@ -48,9 +46,22 @@ export default function ProductsPage() {
         filterProducts();
     }, [products, searchQuery, selectedType]);
 
-    const loadProducts = () => {
-        const allProducts = getProducts();
-        setProducts(allProducts);
+    const loadProducts = async () => {
+        try {
+            setIsLoading(true);
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            setProducts(data || []);
+        } catch (error) {
+            console.error('Error loading products:', error);
+            toast.error('Failed to load products');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const filterProducts = () => {
@@ -60,8 +71,8 @@ export default function ProductsPage() {
         if (searchQuery) {
             filtered = filtered.filter(p =>
                 p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                p.artistName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                p.description.toLowerCase().includes(searchQuery.toLowerCase())
+                (p.artist_name && p.artist_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()))
             );
         }
 
@@ -73,7 +84,7 @@ export default function ProductsPage() {
         setFilteredProducts(filtered);
     };
 
-    const handleEdit = (product: Product) => {
+    const handleEdit = (product: any) => {
         setEditingProduct(product);
         setIsFormOpen(true);
     };
@@ -83,13 +94,20 @@ export default function ProductsPage() {
         setDeleteDialogOpen(true);
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         if (productToDelete) {
-            const success = deleteProduct(productToDelete);
-            if (success) {
+            try {
+                const { error } = await supabase
+                    .from('products')
+                    .delete()
+                    .eq('id', productToDelete);
+
+                if (error) throw error;
+
                 toast.success('Product deleted successfully');
                 loadProducts();
-            } else {
+            } catch (error) {
+                console.error('Error deleting product:', error);
                 toast.error('Failed to delete product');
             }
         }
@@ -171,7 +189,11 @@ export default function ProductsPage() {
                 </Card>
 
                 {/* Products Grid */}
-                {filteredProducts.length === 0 ? (
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Loader2 className="w-8 h-8 animate-spin text-copper" />
+                    </div>
+                ) : filteredProducts.length === 0 ? (
                     <Card className="border-none shadow-sm">
                         <CardContent className="p-12 text-center">
                             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -196,9 +218,9 @@ export default function ProductsPage() {
                         {filteredProducts.map((product) => (
                             <Card key={product.id} className="border-none shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
                                 <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                                    {product.imageUrl ? (
+                                    {product.image_url ? (
                                         <img
-                                            src={product.imageUrl}
+                                            src={product.image_url}
                                             alt={product.name}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
@@ -229,7 +251,7 @@ export default function ProductsPage() {
                                         </span>
                                     </div>
                                     <h3 className="font-medium text-charcoal mb-1 truncate">{product.name}</h3>
-                                    <p className="text-sm text-charcoal/60 mb-2">by {product.artistName}</p>
+                                    <p className="text-sm text-charcoal/60 mb-2">by {product.artist_name}</p>
                                     <p className="text-lg font-bold text-charcoal">${product.price.toLocaleString()}</p>
                                     <p className="text-xs text-charcoal/40 mt-2 line-clamp-2">{product.description}</p>
                                 </CardContent>

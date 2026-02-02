@@ -1,45 +1,39 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+// Imports moved
+import { useState, useEffect } from 'react';
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: 'Bronze Meridian Sculpture',
-    category: 'Artifacts',
-    price: '₹2,45,000',
-    image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=600&q=80',
-    tag: 'Boardroom Fit',
-  },
-  {
-    id: 2,
-    name: 'Abstract Horizon No. 7',
-    category: 'Canvas Paintings',
-    price: '₹1,85,000',
-    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=600&q=80',
-    tag: 'Corporate Collection',
-  },
-  {
-    id: 3,
-    name: 'Marble Essence Installation',
-    category: 'Custom Art',
-    price: 'On Request',
-    image: 'https://images.unsplash.com/photo-1561839561-b13bcfe95249?auto=format&fit=crop&w=600&q=80',
-    tag: 'Luxury Gifting',
-  },
-  {
-    id: 4,
-    name: 'Geometric Flow Series',
-    category: 'Canvas Paintings',
-    price: '₹1,25,000',
-    image: 'https://images.unsplash.com/photo-1506792006437-256b665541e2?auto=format&fit=crop&w=600&q=80',
-    tag: 'Office Interiors',
-  },
-];
+
+import { supabase } from '@/lib/supabase';
+
+// ...
 
 export default function ProductDiscovery() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDiscovery = async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .limit(4)
+        .order('price', { ascending: false }); // Example: Top rated = highest price? or just random
+
+      if (data) {
+        setFeaturedProducts(data.map(item => ({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          price: item.price ? `₹${item.price.toLocaleString()}` : 'On Request',
+          image: item.image_url,
+          tag: item.tags?.[0] || 'Featured'
+        })));
+      }
+    };
+    fetchDiscovery();
+  }, []);
 
   return (
     <section className="section-padding bg-warm-cream">

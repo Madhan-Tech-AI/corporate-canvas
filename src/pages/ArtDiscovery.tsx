@@ -4,85 +4,49 @@ import Reveal from '@/components/Reveal';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
-
-const categories = [
-    {
-        id: 'abstract',
-        name: 'Abstract',
-        description: 'Non-objective imagery focusing on color, form, and emotion.',
-        use: 'Modern Offices & Creative Lounges',
-        image: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'contemporary',
-        name: 'Contemporary',
-        description: 'Art of today, produced in the second half of the 20th century or the 21st century.',
-        use: 'Tech Startups & Innovation Hubs',
-        image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'minimal',
-        name: 'Minimal',
-        description: 'Stripped down to its essential quality, achieving simplicity.',
-        use: 'Executive Suites & Boardrooms',
-        image: 'https://images.unsplash.com/photo-1507643179173-617d67456adb?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'landscape',
-        name: 'Landscape',
-        description: 'Depiction of natural scenery such as mountains, valleys, trees, rivers, and forests.',
-        use: 'Wellness Areas & Waiting Rooms',
-        image: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'portrait',
-        name: 'Portrait',
-        description: 'Artistic representation of a person, capturing their likeness and mood.',
-        use: 'Reception Areas & Hallways',
-        image: 'https://images.unsplash.com/photo-1531913764164-f85c52e6e654?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'cultural',
-        name: 'Cultural / Traditional',
-        description: 'Artworks that reflect the heritage, values, and traditions of a specific culture.',
-        use: 'Cultural Centers & Global Offices',
-        image: 'https://images.unsplash.com/photo-1582560865233-030a582fae2e?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'modern-indian',
-        name: 'Modern Indian',
-        description: 'A fusion of Indian artistic traditions with modern techniques and styles.',
-        use: 'Corporate Headquarters in India',
-        image: 'https://images.unsplash.com/photo-1563804806085-f5c7174db62c?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'calligraphy',
-        name: 'Calligraphy',
-        description: 'Visual art related to writing, designing and executing lettering.',
-        use: 'Quiet Zones & Libraries',
-        image: 'https://images.unsplash.com/photo-1512399996020-c24c25f4a64d?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-        id: 'conceptual',
-        name: 'Conceptual',
-        description: 'Art in which the idea or concept presented is more important than the finished art object.',
-        use: 'Brainstorming Rooms & Design Studios',
-        image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80'
-    }
-];
-
-
-
-const collections = [
-    { id: 1, title: 'The Meridian Collection', subtitle: 'Abstract Sculptures', description: 'A symphony of form and material, crafted for executive spaces.', pieces: 24, image: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=1200&q=80', href: '/collections' },
-    { id: 2, title: 'Horizon Series', subtitle: 'Contemporary Canvas', description: 'Bold strokes and muted palettes for modern corporate environments.', pieces: 36, image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=80', href: '/collections' },
-    { id: 3, title: 'Essence Collection', subtitle: 'Marble & Stone', description: 'Timeless elegance carved from the finest materials.', pieces: 18, image: 'https://images.unsplash.com/photo-1491245338813-c6832976196e?auto=format&fit=crop&w=1200&q=80', href: '/collections' },
-    { id: 4, title: 'Corporate Editions', subtitle: 'Limited Releases', description: 'Exclusive artworks available only for corporate collectors.', pieces: 12, image: 'https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07?auto=format&fit=crop&w=1200&q=80', href: '/collections' },
-];
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function ArtDiscovery() {
     const [hoveredCollectionId, setHoveredCollectionId] = useState<number | null>(null);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [collections, setCollections] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            // Fetch Categories (Using distinct categories from products or just mock if we don't have a table)
+            // For now, let's just fetch all products and manually derive categories to show "dynamic" nature
+            const { data: products } = await supabase.from('products').select('*');
+
+            if (products && products.length > 0) {
+                // Derive categories
+                const uniqueCategories = Array.from(new Set(products.map(p => p.category))).filter(Boolean);
+                const cats = uniqueCategories.map((cat, index) => ({
+                    id: cat,
+                    name: cat,
+                    description: `Explore our exclusive collection of ${cat} artworks.`,
+                    use: 'Corporate & Home',
+                    image: products.find(p => p.category === cat)?.image_url || ''
+                }));
+                setCategories(cats);
+
+                // Derive collections (e.g. grouped by Type or just random subsets)
+                // Let's just make 2-3 collections based on Type if available, or just chunks
+                const uniqueTypes = Array.from(new Set(products.map(p => p.type))).filter(Boolean);
+                const cols = uniqueTypes.map((type, index) => ({
+                    id: index,
+                    title: `${type} Collection`,
+                    subtitle: 'Curated Series',
+                    description: `A selection of fine ${type} works.`,
+                    pieces: products.filter(p => p.type === type).length,
+                    image: products.find(p => p.type === type)?.image_url || '',
+                    href: `/products?search=${type}`
+                }));
+                setCollections(cols);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <div className="min-h-screen bg-background">
@@ -115,13 +79,17 @@ export default function ArtDiscovery() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {categories.map((category, index) => (
                             <Reveal key={category.id} width="100%" delay={index * 0.1}>
-                                <Link to={`/collections?category=${category.id}`} className="group block bg-white rounded-sm overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col">
+                                <Link to={`/products?search=${category.name}`} className="group block bg-white rounded-sm overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col">
                                     <div className="relative aspect-[16/9] overflow-hidden">
-                                        <img
-                                            src={category.image}
-                                            alt={category.name}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
+                                        {category.image ? (
+                                            <img
+                                                src={category.image}
+                                                alt={category.name}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-200 flex items-center justify-center text-charcoal/30">No Image</div>
+                                        )}
                                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                                             <ArrowUpRight className="w-5 h-5 text-charcoal" />
@@ -176,11 +144,15 @@ export default function ArtDiscovery() {
                                     onMouseLeave={() => setHoveredCollectionId(null)}
                                 >
                                     <div className={cn('relative aspect-[4/3] overflow-hidden rounded-sm', index % 2 === 1 && 'lg:order-2')}>
-                                        <img
-                                            src={collection.image}
-                                            alt={collection.title}
-                                            className={cn('w-full h-full object-cover transition-transform duration-700 ease-premium', hoveredCollectionId === collection.id ? 'scale-105' : 'scale-100')}
-                                        />
+                                        {collection.image ? (
+                                            <img
+                                                src={collection.image}
+                                                alt={collection.title}
+                                                className={cn('w-full h-full object-cover transition-transform duration-700 ease-premium', hoveredCollectionId === collection.id ? 'scale-105' : 'scale-100')}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-200 flex items-center justify-center text-charcoal/30">No Image</div>
+                                        )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent" />
                                     </div>
                                     <div className={cn(index % 2 === 1 && 'lg:order-1')}>

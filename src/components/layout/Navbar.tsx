@@ -7,7 +7,7 @@ import CurrencySelector from '../ui/CurrencySelector';
 
 const navLinks = [
   { name: 'Art Discovery', href: '/art-discovery' },
-  { name: 'Product', href: '/collections' },
+  { name: 'Product', href: '/products' },
   { name: 'Customize', href: '/custom-art' },
   { name: 'Sell Arts', href: '/sell-art' },
   { name: 'Corporate', href: '/corporate-services' },

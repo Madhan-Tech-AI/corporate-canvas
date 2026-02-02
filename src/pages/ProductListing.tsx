@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+// Imports moved down
+import { Link, useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
@@ -50,10 +50,14 @@ const StyledCard = styled.div`
 `;
 
 // --- Enhanced Mock Data ---
+import { useState, useEffect, useMemo } from 'react';
+import { supabase } from '@/lib/supabase';
+
+// --- Enhanced Data Type ---
 interface Product {
-  id: number;
+  id: any; // Using any for compatibility with mixed ID types for now, ideally UUID
   name: string;
-  category: string; // "Collection"
+  category: string;
   price: number | null;
   image: string;
   tag?: string;
@@ -63,104 +67,10 @@ interface Product {
   availability: string;
 }
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'Bronze Meridian Sculpture',
-    category: 'Artifacts',
-    price: 245000,
-    image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=600&q=80',
-    tag: 'Boardroom Fit',
-    medium: 'Bronze',
-    size: 'Medium',
-    orientation: 'Portrait',
-    availability: 'In Stock'
-  },
-  {
-    id: 2,
-    name: 'Abstract Horizon No. 7',
-    category: 'Canvas Paintings',
-    price: 185000,
-    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=600&q=80',
-    tag: 'Corporate Collection',
-    medium: 'Acrylic',
-    size: 'Large',
-    orientation: 'Landscape',
-    availability: 'In Stock'
-  },
-  {
-    id: 3,
-    name: 'Marble Essence Installation',
-    category: 'Custom Art',
-    price: null,
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=600&q=80',
-    tag: 'Luxury Gifting',
-    medium: 'Marble',
-    size: 'Large',
-    orientation: 'Square',
-    availability: 'Made to Order'
-  },
-  {
-    id: 4,
-    name: 'Geometric Flow Series',
-    category: 'Canvas Paintings',
-    price: 125000,
-    image: 'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=600&q=80',
-    tag: 'Office Interiors',
-    medium: 'Oil',
-    size: 'Medium',
-    orientation: 'Portrait',
-    availability: 'In Stock'
-  },
-  {
-    id: 5,
-    name: 'Obsidian Wave',
-    category: 'Artifacts',
-    price: 320000,
-    image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=600&q=80',
-    tag: 'Executive Suite',
-    medium: 'Stone',
-    size: 'Small',
-    orientation: 'Landscape',
-    availability: 'In Stock'
-  },
-  {
-    id: 6,
-    name: 'Chromatic Depth III',
-    category: 'Canvas Paintings',
-    price: 95000,
-    image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=600&q=80',
-    tag: 'Corporate Collection',
-    medium: 'Acrylic',
-    size: 'Small',
-    orientation: 'Square',
-    availability: 'In Stock'
-  },
-  {
-    id: 7,
-    name: 'Brass Constellation',
-    category: 'Artifacts',
-    price: 175000,
-    image: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=600&q=80',
-    tag: 'Reception Area',
-    medium: 'Brass',
-    size: 'Medium',
-    orientation: 'Portrait',
-    availability: 'In Stock'
-  },
-  {
-    id: 8,
-    name: 'Minimalist Gradient',
-    category: 'Canvas Paintings',
-    price: 85000,
-    image: 'https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=600&q=80',
-    tag: 'Office Interiors',
-    medium: 'Mixed Media',
-    size: 'Medium',
-    orientation: 'Landscape',
-    availability: 'In Stock'
-  },
-];
+// ... existing imports ...
+
+
+// Products state will be managed inside the component
 
 // --- Filter Options ---
 const filterOptions = {
@@ -173,11 +83,86 @@ const filterOptions = {
 
 export default function ProductListing() {
   // State
+  const [products, setProducts] = useState<Product[]>([]); // New state for products
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('featured');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
   const [expandedSections, setExpandedSections] = useState<string[]>(['collections', 'medium']);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Handle Search Params
+  useEffect(() => {
+    const query = searchParams.get('search');
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
+
+  // Fetch Products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*');
+
+        if (error) throw error;
+
+        if (data) {
+          const formattedProducts: Product[] = data.map(item => ({
+            id: item.id,
+            name: item.name,
+            category: item.category || 'Collection',
+            price: item.price,
+            image: item.image_url || '',
+            tag: item.tags && item.tags.length > 0 ? item.tags[0] : undefined, // taking first tag as main tag
+            medium: item.medium || 'Mixed Media',
+            size: item.size || 'Medium',
+            orientation: item.orientation || 'Landscape',
+            availability: item.availability || 'In Stock'
+          }));
+          setProducts(formattedProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+
+    // Realtime Subscription
+    const channel = supabase
+      .channel('products-listing-updates')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'products' },
+        (payload) => {
+          const newItem = payload.new as any;
+          const formattedItem: Product = {
+            id: newItem.id,
+            name: newItem.name,
+            category: newItem.category || 'Collection',
+            price: newItem.price,
+            image: newItem.image_url || '',
+            tag: newItem.tags && newItem.tags.length > 0 ? newItem.tags[0] : undefined,
+            medium: newItem.medium || 'Mixed Media',
+            size: newItem.size || 'Medium',
+            orientation: newItem.orientation || 'Landscape',
+            availability: newItem.availability || 'In Stock'
+          };
+          setProducts(prev => [formattedItem, ...prev]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
   const itemsPerPage = 8; // Adjust based on grid layout (4 cols x 2 rows or similar)
 
   // Multi-select filters
@@ -217,7 +202,7 @@ export default function ProductListing() {
       orientation: [],
       availability: [],
     });
-    setPriceRange([0, 500000]);
+    setPriceRange([0, 5000000]);
     setSearchQuery('');
     setCurrentPage(1);
   };
@@ -277,7 +262,7 @@ export default function ProductListing() {
     }
 
     return result;
-  }, [selectedFilters, priceRange, searchQuery, sortOption]);
+  }, [products, selectedFilters, priceRange, searchQuery, sortOption]);
 
 
   // Shared Filter Content Component
@@ -487,7 +472,7 @@ export default function ProductListing() {
                             className={cn(
                               "flex-1 rounded-t-sm transition-colors duration-300",
                               // Highlight bars within range approximately
-                              (i / 11) * 1000000 >= priceRange[0] && (i / 11) * 1000000 <= priceRange[1]
+                              (i / 11) * 5000000 >= priceRange[0] && (i / 11) * 5000000 <= priceRange[1]
                                 ? "bg-charcoal/80"
                                 : "bg-charcoal/10"
                             )}
@@ -497,8 +482,8 @@ export default function ProductListing() {
                       </div>
 
                       <Slider
-                        defaultValue={[0, 500000]}
-                        max={1000000}
+                        defaultValue={[0, 5000000]}
+                        max={5000000}
                         step={10000}
                         value={priceRange}
                         onValueChange={(val) => setPriceRange(val as [number, number])}
@@ -567,8 +552,8 @@ export default function ProductListing() {
                   <div className="mb-6 px-1">
                     <h3 className="text-sm font-medium mb-4">Price Range</h3>
                     <Slider
-                      defaultValue={[0, 500000]}
-                      max={1000000}
+                      defaultValue={[0, 5000000]}
+                      max={5000000}
                       step={5000}
                       value={priceRange}
                       onValueChange={(val) => setPriceRange(val as [number, number])}
@@ -776,31 +761,43 @@ export default function ProductListing() {
 
             {/* Pagination Controls */}
             {filteredProducts.length > itemsPerPage && (
-              <div className="mt-12 flex justify-center items-center gap-4">
-                <button
-                  onClick={() => {
-                    setCurrentPage(p => Math.max(1, p - 1));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  disabled={currentPage === 1}
-                  className="p-2 rounded-full border border-gray-200 text-charcoal/70 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-
-                <span className="text-sm font-medium text-charcoal/80 font-serif">
+              <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                {/* Left: Page Count */}
+                <span className="text-charcoal/60 text-sm font-medium">
                   Page {currentPage} of {Math.ceil(filteredProducts.length / itemsPerPage)}
                 </span>
 
+                {/* Center: Page Numbers */}
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: Math.ceil(filteredProducts.length / itemsPerPage) }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => {
+                        setCurrentPage(page);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className={cn(
+                        "w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200",
+                        currentPage === page
+                          ? "bg-copper text-white shadow-md shadow-orange-100"
+                          : "text-charcoal/70 hover:bg-gray-100"
+                      )}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Right: Next Button */}
                 <button
                   onClick={() => {
                     setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / itemsPerPage), p + 1));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   disabled={currentPage === Math.ceil(filteredProducts.length / itemsPerPage)}
-                  className="p-2 rounded-full border border-gray-200 text-charcoal/70 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  className="text-copper text-sm font-semibold uppercase tracking-wider hover:underline disabled:opacity-30 disabled:cursor-not-allowed disabled:no-underline transition-all"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  Next
                 </button>
               </div>
             )}

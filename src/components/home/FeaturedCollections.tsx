@@ -1,38 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Reveal from '@/components/Reveal';
 
-const collections = [
-  {
-    id: 1,
-    title: 'Artifacts',
-    subtitle: 'Sculptural Masterpieces',
-    description: 'Hand-crafted sculptures and installations for executive spaces',
-    href: '/collections',
-    image: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 2,
-    title: 'Canvas Paintings',
-    subtitle: 'Contemporary Vision',
-    description: 'Original paintings by acclaimed artists for corporate collections',
-    href: '/canvas-paintings',
-    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 3,
-    title: 'Custom Corporate Art',
-    subtitle: 'Bespoke Creations',
-    description: 'Commissioned artworks tailored to your brand identity',
-    href: '/custom-art',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=800&q=80',
-  },
-];
-
 export default function FeaturedCollections() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [collections, setCollections] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      const { data: products } = await supabase.from('products').select('*');
+      if (products && products.length > 0) {
+        // Group by Category to create "Collections"
+        const uniqueCategories = Array.from(new Set(products.map(p => p.category))).slice(0, 3);
+
+        const cols = uniqueCategories.map((cat, index) => ({
+          id: index,
+          title: `${cat}`,
+          subtitle: 'Curated Collection',
+          description: `Explore our exclusive selection of ${cat} artworks suited for premium spaces.`,
+          image: products.find(p => p.category === cat)?.image_url || '',
+          href: `/products?search=${cat}`
+        }));
+
+        setCollections(cols);
+      }
+    };
+    fetchCollections();
+  }, []);
 
   return (
     <section className="section-padding bg-background">

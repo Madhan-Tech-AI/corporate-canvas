@@ -5,44 +5,36 @@ import { ShoppingBag, ArrowRight, Heart } from 'lucide-react';
 import Reveal from '@/components/Reveal';
 import { cn } from '@/lib/utils';
 
-const featuredWorks = [
-    {
-        id: 1,
-        title: 'The Silent Void',
-        artist: 'Eleanor Vance',
-        price: 245000,
-        image: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=800&q=80',
-        category: 'Oil on Canvas'
-    },
-    {
-        id: 2,
-        title: 'Echoes of Dawn',
-        artist: 'Julian Thorne',
-        price: 185000,
-        image: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=800&q=80',
-        category: 'Mixed Media'
-    },
-    {
-        id: 3,
-        title: 'Urban Serenity',
-        artist: 'Amara Singh',
-        price: 165000,
-        image: 'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=800&q=80',
-        category: 'Fine Art Photography'
-    },
-    {
-        id: 4,
-        title: 'Nature\'s Whisper',
-        artist: 'David Kim',
-        price: 320000,
-        image: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?auto=format&fit=crop&w=800&q=80',
-        category: 'Acrylic'
-    }
-];
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+
+// ... existing imports ...
 
 export default function FeaturedArtworks() {
     const { formatPrice } = useCurrency();
     const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const [featuredWorks, setFeaturedWorks] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchFeatured = async () => {
+            const { data } = await supabase
+                .from('products')
+                .select('*')
+                .limit(4); // Just get 4 random-ish products
+
+            if (data) {
+                setFeaturedWorks(data.map(item => ({
+                    id: item.id,
+                    title: item.name, // Mapping name to title
+                    artist: item.artist_name,
+                    price: item.price,
+                    image: item.image_url,
+                    category: item.type // Mapping type to category for display
+                })));
+            }
+        };
+        fetchFeatured();
+    }, []);
 
     return (
         <section className="bg-warm-white py-20">
