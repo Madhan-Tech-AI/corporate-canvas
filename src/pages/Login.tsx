@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Eye, EyeOff } from 'lucide-react';
 
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,10 +16,22 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast.success('Welcome back!');
       navigate('/');
-    }, 1500);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

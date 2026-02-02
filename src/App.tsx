@@ -30,65 +30,69 @@ import RedirectToCollections from "./components/RedirectToCollections";
 
 const queryClient = new QueryClient();
 
+import { AuthProvider } from "./context/AuthContext";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <CurrencyProvider>
-        <WishlistProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <LenisScroll />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/art-discovery" element={<ArtDiscovery />} />
-              <Route path="/collections" element={<ProductListing />} />
-              <Route path="/products" element={<ProductListing />} />
-              <Route path="/artifacts" element={<RedirectToCollections />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/bag" element={<Bag />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/sell-art" element={<SellArt />} />
-              <Route path="/custom-art" element={<CustomArt />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/corporate-services" element={<CorporateServices />} />
+    <AuthProvider>
+      <TooltipProvider>
+        <CurrencyProvider>
+          <WishlistProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <LenisScroll />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/art-discovery" element={<ArtDiscovery />} />
+                <Route path="/collections" element={<ProductListing />} />
+                <Route path="/products" element={<ProductListing />} />
+                <Route path="/artifacts" element={<RedirectToCollections />} />
+                <Route path="/products/:id" element={<ProductDetail />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/bag" element={<Bag />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/sell-art" element={<SellArt />} />
+                <Route path="/custom-art" element={<CustomArt />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/corporate-services" element={<CorporateServices />} />
 
-              {/* Admin Routes */}
-              <Route path="/admin" element={<AdminLogin />} />
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/products"
-                element={
-                  <ProtectedRoute>
-                    <ProductsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/applications"
-                element={
-                  <ProtectedRoute>
-                    <ApplicationsPage />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/products"
+                  element={
+                    <ProtectedRoute>
+                      <ProductsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/applications"
+                  element={
+                    <ProtectedRoute>
+                      <ApplicationsPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </WishlistProvider>
-      </CurrencyProvider>
-    </TooltipProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </WishlistProvider>
+        </CurrencyProvider>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

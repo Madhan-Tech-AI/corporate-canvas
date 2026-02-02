@@ -14,13 +14,22 @@ const navLinks = [
   { name: 'Studio', href: '/about' },
 ];
 
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const location = useLocation();
-  const isDarkPage = false; // Forced light theme for consistency as requested
+  const isDarkPage = false;
   const textColorClass = 'text-charcoal';
   const iconColorClass = 'text-charcoal/80';
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Signed out successfully');
+  };
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -89,13 +98,24 @@ export default function Navbar() {
               <ShoppingBag className="w-5 h-5" />
             </Link>
 
-            <Link
-              to="/login"
-              className={cn(iconColorClass, "hover:text-copper transition-colors duration-300")}
-              aria-label="Account"
-            >
-              <User className="w-5 h-5" />
-            </Link>
+            {user ? (
+              <button
+                onClick={handleSignOut}
+                className={cn(iconColorClass, "hover:text-copper transition-colors duration-300")}
+                aria-label="Sign Out"
+                title="Sign Out"
+              >
+                <User className="w-5 h-5 text-copper" />
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className={cn(iconColorClass, "hover:text-copper transition-colors duration-300")}
+                aria-label="Account"
+              >
+                <User className="w-5 h-5" />
+              </Link>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button

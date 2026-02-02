@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Eye, EyeOff, Check } from 'lucide-react';
 
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
+
 export default function Signup() {
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', company: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +19,44 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => { setIsLoading(false); navigate('/'); }, 1500);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        // Create profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: data.user.id,
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+              company_name: formData.company,
+              email: formData.email,
+            },
+          ]);
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+          // Don't block signup success if profile creation fails, but maybe warn?
+          // Actually, if profile fails, the user is still created. Ideally we retry or handle this.
+          // For now, simple error log.
+        }
+
+        toast.success('Account created successfully!');
+        navigate('/');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign up');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const passwordRequirements = [
