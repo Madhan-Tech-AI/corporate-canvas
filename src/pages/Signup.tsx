@@ -24,6 +24,9 @@ export default function Signup() {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+        },
       });
 
       if (error) throw error;
@@ -44,13 +47,22 @@ export default function Signup() {
 
         if (profileError) {
           console.error('Error creating profile:', profileError);
-          // Don't block signup success if profile creation fails, but maybe warn?
-          // Actually, if profile fails, the user is still created. Ideally we retry or handle this.
-          // For now, simple error log.
         }
 
-        toast.success('Account created successfully!');
-        navigate('/');
+        // Check if email confirmation is required
+        if (data.session === null) {
+          // Email confirmation required
+          toast.success('Account created! Please check your email to confirm your account before logging in.', {
+            duration: 6000,
+          });
+          // Redirect to login for email confirmation flow
+          navigate('/login');
+        } else {
+          // Email confirmation disabled, user is auto-logged in
+          toast.success('Account created successfully!');
+          // Redirect to profile page
+          navigate('/profile');
+        }
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign up');

@@ -2,12 +2,14 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useWishlist } from '@/context/WishlistContext';
+import { useBag } from '@/context/BagContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Trash2, ShoppingBag, Heart } from 'lucide-react';
 import Reveal from '@/components/Reveal';
 
 export default function Wishlist() {
     const { wishlist, removeFromWishlist } = useWishlist();
+    const { addToBag } = useBag();
     const { formatPrice } = useCurrency();
 
     return (
@@ -60,7 +62,17 @@ export default function Wishlist() {
                                             </button>
 
                                             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center pb-6">
-                                                <button className="bg-white text-charcoal px-6 py-2 text-sm uppercase tracking-wider font-medium hover:bg-copper hover:text-white transition-colors flex items-center gap-2">
+                                                <button
+                                                    onClick={() => addToBag({
+                                                        id: item.id,
+                                                        name: item.name,
+                                                        price: typeof item.price === 'number' ? item.price : 0,
+                                                        image: item.image,
+                                                        category: item.category,
+                                                        artist: item.artist,
+                                                    })}
+                                                    className="bg-white text-charcoal px-6 py-2 text-sm uppercase tracking-wider font-medium hover:bg-copper hover:text-white transition-colors flex items-center gap-2"
+                                                >
                                                     <ShoppingBag className="w-4 h-4" />
                                                     Add to Bag
                                                 </button>

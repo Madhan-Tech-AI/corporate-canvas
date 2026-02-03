@@ -8,7 +8,8 @@ import {
     LogOut,
     Menu,
     X,
-    Palette
+    Palette,
+    ShoppingBag
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
+        { icon: ShoppingBag, label: 'Orders', path: '/admin/orders' },
         { icon: Package, label: 'Products', path: '/admin/products' },
         { icon: FileText, label: 'Applications', path: '/admin/applications' },
     ];

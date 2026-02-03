@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
@@ -9,14 +9,18 @@ import ProductReviews from '@/components/product/ProductReviews';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import Reveal from '@/components/Reveal';
+import { useBag } from '@/context/BagContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToBag } = useBag();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [product, setProduct] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // TODO: Integrate with real auth context
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch product details
@@ -62,18 +66,46 @@ export default function ProductDetail() {
   }, [id]);
 
   const handleAddToBag = () => {
-    // Ideally check auth context here
-    if (!isLoggedIn) {
-      // For now, let's just show a success message or open auth
-      // setIsAuthModalOpen(true);
-      toast.success("Added to bag (Demo)");
-    } else {
-      console.log('Added to bag');
-    }
+    if (!product) return;
+    addToBag({
+      id: product.id,
+      name: product.name,
+      price: product.price || 0,
+      image: product.image_url || '',
+      category: product.type,
+      artist: product.artist_name,
+    });
   };
 
   const handleBuyNow = () => {
-    toast.success("Proceeding to checkout (Demo)");
+    if (!product) return;
+    // Add to bag first
+    addToBag({
+      id: product.id,
+      name: product.name,
+      price: product.price || 0,
+      image: product.image_url || '',
+      category: product.type,
+      artist: product.artist_name,
+    });
+    // Navigate to review page
+    navigate('/checkout/review');
+  };
+
+  const handleToggleWishlist = () => {
+    if (!product) return;
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image_url || '',
+        category: product.type,
+        artist: product.artist_name,
+      });
+    }
   };
 
   if (isLoading) {
@@ -197,22 +229,30 @@ export default function ProductDetail() {
                     disabled={product.availability === 'Sold Out'}
                     className="w-full py-4 bg-charcoal text-white uppercase tracking-widest text-xs font-bold hover:bg-charcoal/90 transition-all shadow-xl shadow-charcoal/10 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {product.availability === 'Sold Out' ? 'Unavailable' : 'Add to Collection'}
+                    {product.availability === 'Sold Out' ? 'Unavailable' : 'Add to Bag'}
                   </button>
                   <button
                     onClick={handleBuyNow}
                     disabled={product.availability === 'Sold Out'}
                     className="w-full py-4 border border-charcoal text-charcoal uppercase tracking-widest text-xs font-bold hover:bg-charcoal hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Process Inquiry
+                    Buy Now
                   </button>
                 </div>
 
                 {/* Secondary Actions */}
                 <div className="flex items-center gap-8 justify-center lg:justify-start">
-                  <button className="flex items-center gap-2 text-charcoal/60 hover:text-copper transition-colors group">
-                    <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                    <span className="text-xs uppercase tracking-wider">Save</span>
+                  <button
+                    onClick={handleToggleWishlist}
+                    className="flex items-center gap-2 text-charcoal/60 hover:text-copper transition-colors group"
+                  >
+                    <Heart className={cn(
+                      "w-5 h-5 group-hover:scale-110 transition-transform",
+                      isInWishlist(product?.id) && "fill-current text-red-500"
+                    )} />
+                    <span className="text-xs uppercase tracking-wider">
+                      {isInWishlist(product?.id) ? 'Saved' : 'Save'}
+                    </span>
                   </button>
                   <button className="flex items-center gap-2 text-charcoal/60 hover:text-copper transition-colors group">
                     <Share2 className="w-5 h-5 group-hover:scale-110 transition-transform" />

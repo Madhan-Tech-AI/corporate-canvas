@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CurrencyProvider } from "./context/CurrencyContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { BagProvider } from "./context/BagContext";
+import { OrdersProvider } from "./context/OrdersContext";
 import LenisScroll from "./components/LenisScroll";
 import Index from "./pages/Index";
 import Wishlist from "./pages/Wishlist";
@@ -16,6 +18,7 @@ import ProductListing from "./pages/ProductListing";
 import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 import Bag from "./pages/Bag";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
@@ -28,6 +31,20 @@ import ApplicationsPage from "./pages/admin/ApplicationsPage";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import RedirectToCollections from "./components/RedirectToCollections";
 
+// Checkout pages
+import Review from "./pages/checkout/Review";
+import Address from "./pages/checkout/Address";
+import Payment from "./pages/checkout/Payment";
+import OrderConfirmation from "./pages/checkout/OrderConfirmation";
+
+// Orders pages
+import Orders from "./pages/Orders";
+import OrderDetail from "./pages/OrderDetail";
+
+// Admin orders pages
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
+
 const queryClient = new QueryClient();
 
 import { AuthProvider } from "./context/AuthContext";
@@ -37,59 +54,91 @@ const App = () => (
     <AuthProvider>
       <TooltipProvider>
         <CurrencyProvider>
-          <WishlistProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <LenisScroll />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/art-discovery" element={<ArtDiscovery />} />
-                <Route path="/collections" element={<ProductListing />} />
-                <Route path="/products" element={<ProductListing />} />
-                <Route path="/artifacts" element={<RedirectToCollections />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/bag" element={<Bag />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/sell-art" element={<SellArt />} />
-                <Route path="/custom-art" element={<CustomArt />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/corporate-services" element={<CorporateServices />} />
+          <OrdersProvider>
+            <BagProvider>
+              <WishlistProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <LenisScroll />
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/art-discovery" element={<ArtDiscovery />} />
+                    <Route path="/collections" element={<ProductListing />} />
+                    <Route path="/products" element={<ProductListing />} />
+                    <Route path="/artifacts" element={<RedirectToCollections />} />
+                    <Route path="/products/:id" element={<ProductDetail />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/bag" element={<Bag />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/sell-art" element={<SellArt />} />
+                    <Route path="/custom-art" element={<CustomArt />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/corporate-services" element={<CorporateServices />} />
 
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminLogin />} />
-                <Route
-                  path="/admin/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/products"
-                  element={
-                    <ProtectedRoute>
-                      <ProductsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/applications"
-                  element={
-                    <ProtectedRoute>
-                      <ApplicationsPage />
-                    </ProtectedRoute>
-                  }
-                />
+                    {/* Checkout Routes */}
+                    <Route path="/checkout/review" element={<Review />} />
+                    <Route path="/checkout/address" element={<Address />} />
+                    <Route path="/checkout/payment" element={<Payment />} />
+                    <Route path="/checkout/confirmation/:orderId" element={<OrderConfirmation />} />
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </WishlistProvider>
+                    {/* Orders Routes */}
+                    <Route path="/orders" element={<Orders />} />
+                    <Route path="/orders/:orderId" element={<OrderDetail />} />
+
+                    {/* Admin Routes */}
+                    <Route path="/admin" element={<AdminLogin />} />
+                    <Route
+                      path="/admin/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <AdminDashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/products"
+                      element={
+                        <ProtectedRoute>
+                          <ProductsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/applications"
+                      element={
+                        <ProtectedRoute>
+                          <ApplicationsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/orders"
+                      element={
+                        <ProtectedRoute>
+                          <AdminOrders />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/orders/:orderId"
+                      element={
+                        <ProtectedRoute>
+                          <AdminOrderDetail />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    {/* 404 Route */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </WishlistProvider>
+            </BagProvider>
+          </OrdersProvider>
         </CurrencyProvider>
       </TooltipProvider>
     </AuthProvider>

@@ -18,17 +18,39 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
+      // Check if user's email is confirmed
+      if (data.user && !data.user.email_confirmed_at) {
+        toast.error('Please confirm your email address before logging in. Check your inbox for the confirmation link.', {
+          duration: 6000,
+        });
+        await supabase.auth.signOut();
+        return;
+      }
+
       toast.success('Welcome back!');
-      navigate('/');
+      navigate('/profile');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to sign in');
+      // Handle specific error cases
+      if (error.message?.toLowerCase().includes('email not confirmed')) {
+        toast.error('Please confirm your email address before logging in. Check your inbox for the confirmation link.', {
+          duration: 6000,
+        });
+      } else if (error.message?.toLowerCase().includes('invalid login credentials')) {
+        toast.error('Invalid email or password. Please try again.');
+      } else if (error.name === 'TypeError' && error.message?.includes('fetch')) {
+        toast.error('Network error. Please check your internet connection and Supabase configuration.', {
+          duration: 5000,
+        });
+      } else {
+        toast.error(error.message || 'Failed to sign in');
+      }
     } finally {
       setIsLoading(false);
     }

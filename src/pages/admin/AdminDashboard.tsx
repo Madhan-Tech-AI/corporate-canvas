@@ -159,9 +159,9 @@ export default function AdminDashboard() {
                                 {analytics?.topProducts.slice(0, 5).map((product, index) => (
                                     <div key={product.id} className="flex items-center gap-3">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${index === 0 ? 'bg-yellow-100 text-yellow-700' :
-                                                index === 1 ? 'bg-gray-100 text-gray-700' :
-                                                    index === 2 ? 'bg-orange-100 text-orange-700' :
-                                                        'bg-blue-50 text-blue-700'
+                                            index === 1 ? 'bg-gray-100 text-gray-700' :
+                                                index === 2 ? 'bg-orange-100 text-orange-700' :
+                                                    'bg-blue-50 text-blue-700'
                                             }`}>
                                             {index + 1}
                                         </div>
@@ -185,7 +185,15 @@ export default function AdminDashboard() {
                         <CardTitle>Quick Actions</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <a
+                                href="/admin/orders"
+                                className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-lg hover:shadow-md transition-all border border-purple-500/20 group"
+                            >
+                                <Package className="w-8 h-8 text-purple-600 mb-3 group-hover:scale-110 transition-transform" />
+                                <h3 className="font-medium text-charcoal mb-1">Manage Orders</h3>
+                                <p className="text-sm text-charcoal/60">View and track all orders</p>
+                            </a>
                             <a
                                 href="/admin/products"
                                 className="p-6 bg-gradient-to-br from-copper/10 to-copper/5 rounded-lg hover:shadow-md transition-all border border-copper/20 group"

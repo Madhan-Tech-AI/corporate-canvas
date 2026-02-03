@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, X, Menu, Heart } from 'lucide-react';
+import { Search, ShoppingBag, User, X, Menu, Heart, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SearchOverlay from './SearchOverlay';
 import CurrencySelector from '../ui/CurrencySelector';
@@ -15,21 +15,23 @@ const navLinks = [
 ];
 
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
+import { useWishlist } from '@/context/WishlistContext';
+import { useBag } from '@/context/BagContext';
+import { useOrders } from '@/context/OrdersContext';
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
+  const { wishlistCount } = useWishlist();
+  const { bagCount } = useBag();
+  const { ordersCount } = useOrders();
   const location = useLocation();
   const isDarkPage = false;
   const textColorClass = 'text-charcoal';
   const iconColorClass = 'text-charcoal/80';
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success('Signed out successfully');
-  };
+
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -83,11 +85,29 @@ export default function Navbar() {
             </button>
 
             <Link
+              to="/orders"
+              className={cn(iconColorClass, "hover:text-copper transition-colors duration-300 relative")}
+              aria-label="Orders"
+            >
+              <Package className="w-5 h-5" />
+              {ordersCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-copper text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                  {ordersCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
               to="/wishlist"
               className={cn(iconColorClass, "hover:text-copper transition-colors duration-300 relative")}
               aria-label="Wishlist"
             >
               <Heart className="w-5 h-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-copper text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
 
             <Link
@@ -96,17 +116,22 @@ export default function Navbar() {
               aria-label="Shopping bag"
             >
               <ShoppingBag className="w-5 h-5" />
+              {bagCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-copper text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                  {bagCount}
+                </span>
+              )}
             </Link>
 
             {user ? (
-              <button
-                onClick={handleSignOut}
+              <Link
+                to="/profile"
                 className={cn(iconColorClass, "hover:text-copper transition-colors duration-300")}
-                aria-label="Sign Out"
-                title="Sign Out"
+                aria-label="Profile"
+                title="My Profile"
               >
                 <User className="w-5 h-5 text-copper" />
-              </button>
+              </Link>
             ) : (
               <Link
                 to="/login"

@@ -1,5 +1,5 @@
 // Imports moved down
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
@@ -83,6 +83,7 @@ const filterOptions = {
 
 export default function ProductListing() {
   // State
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]); // New state for products
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
@@ -155,6 +156,34 @@ export default function ProductListing() {
             availability: newItem.availability || 'In Stock'
           };
           setProducts(prev => [formattedItem, ...prev]);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'products' },
+        (payload) => {
+          const updatedItem = payload.new as any;
+          const formattedItem: Product = {
+            id: updatedItem.id,
+            name: updatedItem.name,
+            category: updatedItem.category || 'Collection',
+            price: updatedItem.price,
+            image: updatedItem.image_url || '',
+            tag: updatedItem.tags && updatedItem.tags.length > 0 ? updatedItem.tags[0] : undefined,
+            medium: updatedItem.medium || 'Mixed Media',
+            size: updatedItem.size || 'Medium',
+            orientation: updatedItem.orientation || 'Landscape',
+            availability: updatedItem.availability || 'In Stock'
+          };
+          setProducts(prev => prev.map(p => p.id === formattedItem.id ? formattedItem : p));
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'DELETE', schema: 'public', table: 'products' },
+        (payload) => {
+          const deletedId = (payload.old as any).id;
+          setProducts(prev => prev.filter(p => p.id !== deletedId));
         }
       )
       .subscribe();
@@ -662,22 +691,24 @@ export default function ProductListing() {
 
                       {/* Hover Actions: Add to Bag & Buy Now */}
                       <div className="absolute inset-x-4 bottom-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex flex-col gap-2 opacity-0 group-hover:opacity-100 pb-2 z-10">
-                        <Link
-                          to={`/products/${product.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/products/${product.id}`);
+                          }}
                           className="w-full py-3 bg-white text-charcoal font-medium text-xs uppercase tracking-wider text-center hover:bg-white/90 shadow-lg rounded-sm transition-colors"
                         >
                           Add to Bag
-                        </Link>
-                        <Link
-                          to={`/products/${product.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/products/${product.id}`);
+                          }}
                           className="w-full py-3 bg-charcoal text-white font-medium text-xs uppercase tracking-wider text-center hover:bg-charcoal/90 shadow-lg rounded-sm transition-colors"
                         >
                           Buy Now
-                        </Link>
+                        </button>
                       </div>
 
                       {/* Badges/Tags */}
