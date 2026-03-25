@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
+import { adminLogin, adminLogout, isAdminAuthenticated, saveOrder } from '@/lib/adminStorage';
 import { toast } from 'sonner';
 
 export interface Order {
@@ -162,6 +163,12 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
                 .insert(orderItems);
 
             if (itemsError) throw itemsError;
+            
+            // Sync to local admin storage for the dashboard preview
+            saveOrder({
+                ...order,
+                items: orderItems as any
+            });
 
             toast.success('Order placed successfully!');
             return order;

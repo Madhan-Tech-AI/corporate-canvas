@@ -426,9 +426,9 @@ export default function ProductListing() {
         {/* Header Section: Title & Controls */}
         <div className="flex flex-col gap-6 mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-serif text-charcoal mb-1">Gallery Collection</h1>
-              <p className="text-charcoal/50 text-sm">Curated artifacts and fine art for corporate spaces</p>
+            <div className="max-w-2xl">
+              <h1 className="text-3xl md:text-4xl font-serif text-charcoal mb-2">Gallery Collection</h1>
+              <p className="text-charcoal/50 text-sm md:text-base">Curated artifacts and fine art for corporate spaces</p>
             </div>
 
             {/* Top Controls: Search & Price & Sort */}
@@ -673,7 +673,7 @@ export default function ProductListing() {
           <div className="flex-1">
             {/* Grid */}
             <div className={cn(
-              'grid gap-x-6 gap-y-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              'grid gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
             )}>
 
               {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (

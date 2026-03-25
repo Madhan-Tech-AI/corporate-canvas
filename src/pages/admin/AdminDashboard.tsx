@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAnalytics, Analytics } from '@/lib/adminStorage';
+import { getAnalytics, Analytics, getCustomArtApplications, CustomArtApplication, getSellArtApplications, SellArtApplication } from '@/lib/adminStorage';
+import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import {
     DollarSign,
     Package,
@@ -11,6 +13,7 @@ import {
     ArrowUpRight,
     ArrowDownRight
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
     LineChart,
     Line,
@@ -23,10 +26,26 @@ import {
 
 export default function AdminDashboard() {
     const [analytics, setAnalytics] = useState<Analytics | null>(null);
+    const [recentApps, setRecentApps] = useState<any[]>([]);
 
     useEffect(() => {
         const data = getAnalytics();
         setAnalytics(data);
+        
+        const customApps = getCustomArtApplications();
+        const sellApps = getSellArtApplications();
+        
+        // Combine and tag them
+        const combined = [
+            ...customApps.map(app => ({ ...app, type: 'Custom Art' })),
+            ...sellApps.map(app => ({ ...app, type: 'Artist', customerName: app.artistName }))
+        ];
+
+        // Sort by date descending and take top 5
+        const sortedApps = combined.sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ).slice(0, 5);
+        setRecentApps(sortedApps);
     }, []);
 
     const stats = [
@@ -174,6 +193,72 @@ export default function AdminDashboard() {
                                 )) || (
                                         <p className="text-sm text-charcoal/60 text-center py-8">No products yet</p>
                                     )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Recent Applications Section */}
+                <div className="grid grid-cols-1 gap-6">
+                    <Card className="border-none shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-copper" />
+                                Recent Applications
+                            </CardTitle>
+                            <Link to="/admin/applications" className="text-sm text-copper hover:underline font-medium">
+                                View All
+                            </Link>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                    <tr className="border-b border-gray-100">
+                                            <th className="py-3 px-4 text-sm font-medium text-charcoal/60">Applicant</th>
+                                            <th className="py-3 px-4 text-sm font-medium text-charcoal/60">Type</th>
+                                            <th className="hidden md:table-cell py-3 px-4 text-sm font-medium text-charcoal/60">Details</th>
+                                            <th className="hidden lg:table-cell py-3 px-4 text-sm font-medium text-charcoal/60">Date</th>
+                                            <th className="py-3 px-4 text-sm font-medium text-charcoal/60">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {recentApps.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={5} className="py-8 text-center text-charcoal/40 text-sm">
+                                                    No recent applications found
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            recentApps.map((app) => (
+                                                <tr key={app.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                                                    <td className="py-4 px-4 font-medium text-charcoal">
+                                                        {app.customerName}
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <span className={cn(
+                                                            "px-2 py-0.5 rounded-full text-[10px] font-medium",
+                                                            app.type === 'Custom Art' ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"
+                                                        )}>
+                                                            {app.type}
+                                                        </span>
+                                                    </td>
+                                                    <td className="hidden md:table-cell py-4 px-4 text-sm text-charcoal/80">
+                                                        {app.type === 'Custom Art' ? `${app.serviceType}` : `${app.artworkCount} Artworks`}
+                                                    </td>
+                                                    <td className="hidden lg:table-cell py-4 px-4 text-sm text-charcoal/60">
+                                                        {format(new Date(app.createdAt), 'MMM dd')}
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                                                            {app.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
                         </CardContent>
                     </Card>

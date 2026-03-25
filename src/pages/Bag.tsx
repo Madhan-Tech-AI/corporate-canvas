@@ -39,13 +39,15 @@ export default function Bag() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-6">
               {bag.map((item) => (
-                <div key={item.id} className="flex gap-6 p-6 bg-card rounded-sm border border-border">
-                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-sm overflow-hidden flex-shrink-0">
+                <div key={item.id} className="flex flex-col sm:flex-row gap-6 p-6 bg-card rounded-sm border border-border">
+                  <div className="w-full sm:w-32 aspect-square rounded-sm overflow-hidden flex-shrink-0">
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-caption text-copper-muted mb-1">{item.category}</p>
-                    <h3 className="text-foreground font-serif text-lg mb-2 truncate">{item.name}</h3>
+                    <div className="flex justify-between items-start mb-1">
+                      <p className="text-caption text-copper-muted">{item.category}</p>
+                    </div>
+                    <h3 className="text-foreground font-serif text-lg mb-2 truncate pr-4">{item.name}</h3>
                     <p className="text-copper font-medium">{formatPrice(item.price)}</p>
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center gap-3">

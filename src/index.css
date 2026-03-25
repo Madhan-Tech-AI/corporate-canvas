@@ -122,12 +122,12 @@
   /* Premium Text Styles */
   .text-display {
     font-family: var(--font-serif);
-    @apply text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-none;
+    @apply text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-tight;
   }
 
   .text-headline {
     font-family: var(--font-serif);
-    @apply text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight;
+    @apply text-2xl md:text-4xl lg:text-5xl font-medium tracking-tight;
   }
 
   .text-subheadline {
@@ -245,7 +245,7 @@
 
   /* Section Spacing */
   .section-padding {
-    @apply py-24 md:py-32 lg:py-40;
+    @apply py-16 md:py-32 lg:py-40;
   }
 
   .container-premium {

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { getOrders as getLocalOrders } from '@/lib/adminStorage';
 
 interface Order {
     id: string;
@@ -113,64 +114,79 @@ export default function AdminOrderDetail() {
 
     const fetchOrderDetails = async () => {
         try {
-            // Fetch order
+            // Try fetching from Supabase first
             const { data: orderData, error: orderError } = await supabase
                 .from('orders')
                 .select('*')
                 .eq('id', orderId)
                 .single();
 
-            if (orderError) throw orderError;
-            setOrder(orderData);
-            setNewStatus(orderData.status);
+            if (!orderError && orderData) {
+                setOrder(orderData);
+                setNewStatus(orderData.status);
 
-            // Fetch customer info
-            const { data: profileData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', orderData.user_id)
-                .single();
-            setCustomerInfo(profileData);
+                // Fetch customer info
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', orderData.user_id)
+                    .single();
+                setCustomerInfo(profileData);
 
-            // Fetch order items
-            const { data: itemsData } = await supabase
-                .from('order_items')
-                .select('*')
-                .eq('order_id', orderId);
-            setItems(itemsData || []);
+                // Fetch order items
+                const { data: itemsData } = await supabase
+                    .from('order_items')
+                    .select('*')
+                    .eq('order_id', orderId);
+                setItems(itemsData || []);
+            } else {
+                // Fallback to local storage
+                console.log('Order not found in Supabase, checking local storage...');
+                const localOrders = getLocalOrders();
+                const localOrder = localOrders.find(o => o.id === orderId);
 
-            // Fetch status history
-            const { data: historyData } = await supabase
-                .from('order_status_history')
-                .select('*')
-                .eq('order_id', orderId)
-                .order('created_at', { ascending: false });
-            setHistory(historyData || []);
+                if (localOrder) {
+                    setOrder(localOrder as any);
+                    setNewStatus(localOrder.status);
+                    setItems(localOrder.items || []);
+                    setCustomerInfo({
+                        email: 'Guest Customer',
+                        first_name: localOrder.shipping_address?.name,
+                    });
+                } else {
+                    throw new Error('Order not found');
+                }
+            }
 
-            // Fetch shipments
-            const { data: shipmentsData } = await supabase
-                .from('shipments')
-                .select('*')
-                .eq('order_id', orderId)
-                .order('created_at', { ascending: false });
-            setShipments(shipmentsData || []);
+            // Fetch other details (these might fail safely if not in Supabase/not admin)
+            try {
+                const { data: historyData } = await supabase
+                    .from('order_status_history')
+                    .select('*')
+                    .eq('order_id', orderId)
+                    .order('created_at', { ascending: false });
+                setHistory(historyData || []);
 
-            // Fetch notes
-            const { data: notesData } = await supabase
-                .from('order_notes')
-                .select(`
-          *,
-          admin:admin_id (
-            email
-          )
-        `)
-                .eq('order_id', orderId)
-                .order('created_at', { ascending: false });
-            setNotes(notesData || []);
+                const { data: shipmentsData } = await supabase
+                    .from('shipments')
+                    .select('*')
+                    .eq('order_id', orderId)
+                    .order('created_at', { ascending: false });
+                setShipments(shipmentsData || []);
+
+                const { data: notesData } = await supabase
+                    .from('order_notes')
+                    .select('*, admin:admin_id ( email )')
+                    .eq('order_id', orderId)
+                    .order('created_at', { ascending: false });
+                setNotes(notesData || []);
+            } catch (err) {
+                console.warn('Optional details fetch failed:', err);
+            }
 
         } catch (error) {
             console.error('Error fetching order details:', error);
-            toast.error('Failed to load order details');
+            toast.error('Order not found or access denied');
             navigate('/admin/orders');
         } finally {
             setIsLoading(false);

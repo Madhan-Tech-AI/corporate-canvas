@@ -44,10 +44,10 @@ export default function About() {
               <span className="text-copper text-sm font-medium tracking-widest uppercase mb-4 block">
                 Established 2015
               </span>
-              <h1 className="text-display text-charcoal mb-8 max-w-4xl leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-display text-charcoal mb-8 max-w-4xl leading-tight">
                 Artistry Rooted in <span className="text-copper italic">Passion</span> & Precision
               </h1>
-              <p className="text-xl text-charcoal/70 max-w-2xl leading-relaxed">
+              <p className="text-lg md:text-xl text-charcoal/70 max-w-2xl leading-relaxed px-4 md:px-0">
                 Welcome to ARTEUM. We are more than a gallery; we are a collective of dreamers, creators, and curators dedicated to transforming spaces through the language of art.
               </p>
             </Reveal>

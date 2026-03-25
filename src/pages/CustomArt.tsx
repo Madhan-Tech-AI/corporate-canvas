@@ -59,13 +59,13 @@ export default function CustomArt() {
 
             <main className="pt-32 pb-24">
                 {/* Page Header */}
-                <section className="container-premium text-center mb-16">
+                <section className="container-premium text-center mb-12 md:mb-16">
                     <Reveal>
                         <p className="text-caption text-copper mb-4">Bespoke Services</p>
-                        <h1 className="text-display text-charcoal mb-6">
+                        <h1 className="text-3xl sm:text-4xl md:text-display text-charcoal mb-6">
                             Your Vision, <span className="text-copper italic">Masterfully Crafted</span>
                         </h1>
-                        <p className="text-xl text-charcoal/70 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl text-charcoal/70 max-w-2xl mx-auto leading-relaxed px-4">
                             Whether you need a custom commissioned painting or museum-quality framing, our artisans bring your ideas to life.
                         </p>
                     </Reveal>

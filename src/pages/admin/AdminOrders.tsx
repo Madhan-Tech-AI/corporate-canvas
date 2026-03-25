@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { Package, Search, Filter, Download, RefreshCw, ChevronRight, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { getOrders as getLocalOrders } from '@/lib/adminStorage';
 
 interface Order {
     id: string;
@@ -70,67 +71,94 @@ export default function AdminOrders() {
 
     // Fetch orders
     const fetchOrders = async () => {
+        let supabaseOrders: any[] = [];
+        
         try {
-            let query = supabase
+            const { data, error } = await supabase
                 .from('orders')
                 .select(`
-          *,
-          profiles:user_id (
-            email,
-            first_name,
-            last_name
-          )
-        `)
+                    *,
+                    profiles:user_id (
+                        email,
+                        first_name,
+                        last_name
+                    )
+                `)
                 .order('created_at', { ascending: false });
 
-            // Apply filters
-            if (statusFilter !== 'all') {
-                query = query.eq('status', statusFilter);
-            }
-
-            if (paymentFilter !== 'all') {
-                if (paymentFilter === 'cod') {
-                    query = query.eq('payment_method', 'Cash on Delivery');
-                } else {
-                    query = query.neq('payment_method', 'Cash on Delivery');
-                }
-            }
-
-            const { data, error } = await query;
-
-            if (error) throw error;
-
-            if (data) {
-                const formattedOrders = data.map((order: any) => ({
+            if (error) {
+                console.warn('Supabase orders fetch error (expected if not admin):', error);
+            } else if (data) {
+                supabaseOrders = data.map((order: any) => ({
                     ...order,
                     customer_email: order.profiles?.email,
                     customer_name: order.profiles?.first_name
                         ? `${order.profiles.first_name} ${order.profiles.last_name || ''}`.trim()
                         : order.shipping_address?.name,
                 }));
-                setOrders(formattedOrders);
             }
-        } catch (error) {
-            console.error('Error fetching orders:', error);
-            toast.error('Failed to load orders');
-        } finally {
-            setIsLoading(false);
+        } catch (err) {
+            console.error('Unexpected error fetching Supabase orders:', err);
         }
+
+        // Always fetch orders from local storage for demo sync, regardless of Supabase status
+        const localOrders = getLocalOrders().map(order => ({
+            ...order,
+            customer_name: order.shipping_address?.name,
+        }));
+
+        // Merge and remove duplicates by ID
+        const allOrdersMap = new Map();
+        
+        // Add Supabase orders first
+        supabaseOrders.forEach(o => allOrdersMap.set(o.id, o));
+        // Add/Overwrite with local orders (ensure they take precedence in demo)
+        localOrders.forEach(o => allOrdersMap.set(o.id, o));
+
+        const mergedOrders = Array.from(allOrdersMap.values())
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+        setOrders(mergedOrders);
+        setIsLoading(false);
     };
 
     // Fetch statistics
     const fetchStats = async () => {
+        let supabaseStats: OrderStats = {
+            total_orders: 0,
+            total_revenue: 0,
+            pending_orders: 0,
+            confirmed_orders: 0,
+            shipped_orders: 0,
+            delivered_orders: 0,
+            cancelled_orders: 0,
+        };
+
         try {
             const { data, error } = await supabase.rpc('get_order_statistics');
 
-            if (error) throw error;
-
-            if (data?.success) {
-                setStats(data.data);
+            if (error) {
+                console.warn('Supabase stats RPC error:', error);
+            } else if (data?.success) {
+                supabaseStats = data.data;
             }
         } catch (error) {
             console.error('Error fetching stats:', error);
         }
+
+        // Merge with local storage stats
+        const localOrders = getLocalOrders();
+        const mergedStats: OrderStats = {
+            total_orders: supabaseStats.total_orders + localOrders.length,
+            total_revenue: supabaseStats.total_revenue + localOrders.reduce((sum, o) => sum + o.total_amount, 0),
+            pending_orders: supabaseStats.pending_orders + localOrders.filter(o => o.status === 'pending').length,
+            confirmed_orders: supabaseStats.confirmed_orders + localOrders.filter(o => o.status === 'confirmed').length,
+            shipped_orders: supabaseStats.shipped_orders + localOrders.filter(o => o.status === 'shipped').length,
+            delivered_orders: supabaseStats.delivered_orders + localOrders.filter(o => o.status === 'delivered').length,
+            cancelled_orders: supabaseStats.cancelled_orders + localOrders.filter(o => o.status === 'cancelled').length,
+        };
+
+        setStats(mergedStats);
     };
 
     useEffect(() => {
@@ -313,49 +341,63 @@ export default function AdminOrders() {
                             <RefreshCw className="w-8 h-8 text-copper animate-spin" />
                         </div>
                     ) : filteredOrders.length === 0 ? (
-                        <div className="text-center py-20">
-                            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                            <p className="text-gray-500">No orders found</p>
+                        <div className="text-center py-20 px-4">
+                            <div className="max-w-md mx-auto">
+                                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <Package className="w-10 h-10 text-gray-400" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">No Orders Found</h3>
+                                <p className="text-gray-500 mb-8">
+                                    {searchQuery || statusFilter !== 'all' || paymentFilter !== 'all' 
+                                        ? "No orders match your current filters. Try adjusting them to see more orders."
+                                        : "You haven't received any orders yet. When a customer places an order, it will appear here instantly."}
+                                </p>
+                                {!(searchQuery || statusFilter !== 'all' || paymentFilter !== 'all') && (
+                                    <div className="bg-copper/5 border border-copper/10 rounded-lg p-4 text-sm text-copper text-left">
+                                        <p className="font-semibold mb-1 flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            Testing Instruction:
+                                        </p>
+                                        <p>Go to the storefront, add an item to your bag, and complete the checkout to see a live order appear here!</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead className="bg-gray-50 border-b border-gray-200">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                        <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                        <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                                        <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th className="px-4 md:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {filteredOrders.map((order) => (
                                         <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
                                                     <span className="font-mono text-sm text-gray-900">#{order.id.slice(0, 8).toUpperCase()}</span>
                                                     {order.risk_score > 70 && (
-                                                        <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">High Risk</span>
-                                                    )}
-                                                    {order.sla_breach && (
-                                                        <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full">SLA Breach</span>
+                                                        <span className="hidden sm:inline-block px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">High Risk</span>
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-4 md:px-6 py-4">
                                                 <div className="text-sm">
                                                     <p className="font-medium text-gray-900">{order.customer_name}</p>
-                                                    <p className="text-gray-500">{order.customer_email}</p>
-                                                    <p className="text-gray-500">{order.shipping_address?.phone}</p>
+                                                    <p className="hidden sm:block text-gray-500">{order.customer_email}</p>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                                                 <span className="text-sm font-medium text-gray-900">{formatCurrency(order.total_amount)}</span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm">
                                                     <p className="text-gray-900">{order.payment_method}</p>
                                                     <span className={cn(
@@ -366,27 +408,26 @@ export default function AdminOrders() {
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                                                 <span className={cn(
-                                                    'inline-block px-3 py-1 text-xs font-medium rounded-full border',
+                                                    'inline-block px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium rounded-full border',
                                                     statusColors[order.status as keyof typeof statusColors]
                                                 )}>
                                                     {statusLabels[order.status as keyof typeof statusLabels]}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {new Date(order.created_at).toLocaleDateString('en-IN', {
                                                     day: 'numeric',
                                                     month: 'short',
-                                                    year: 'numeric',
                                                 })}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-right text-sm">
                                                 <Link
                                                     to={`/admin/orders/${order.id}`}
                                                     className="inline-flex items-center gap-1 text-copper hover:text-copper-dark font-medium"
                                                 >
-                                                    View Details
+                                                    <span className="hidden sm:inline">Details</span>
                                                     <ChevronRight className="w-4 h-4" />
                                                 </Link>
                                             </td>

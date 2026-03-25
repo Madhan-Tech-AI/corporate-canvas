@@ -158,7 +158,7 @@ export default function ProductDetail() {
           </nav>
 
           {/* Product Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24">
 
             {/* Image Section */}
             <div className="space-y-6">
@@ -186,9 +186,9 @@ export default function ProductDetail() {
             {/* Product Info */}
             <div className="lg:sticky lg:top-32 lg:self-start">
               <Reveal width="100%" delay={0.2}>
-                <p className="text-xs uppercase tracking-widest text-copper mb-3 font-medium">{product.artist_name}</p>
-                <h1 className="text-4xl md:text-5xl font-serif text-charcoal mb-4 leading-tight">{product.name}</h1>
-                <p className="text-3xl text-charcoal font-light mb-8">
+                <p className="text-xs uppercase tracking-[0.2em] text-copper mb-4 font-semibold">{product.artist_name}</p>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-charcoal mb-6 leading-tight">{product.name}</h1>
+                <p className="text-2xl sm:text-3xl text-charcoal font-light mb-8">
                   {product.price ? `₹${product.price.toLocaleString()}` : 'Price on Request'}
                 </p>
 

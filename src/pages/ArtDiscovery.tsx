@@ -53,11 +53,11 @@ export default function ArtDiscovery() {
             <Navbar />
             <main className="pt-32 pb-20">
                 {/* Header */}
-                <section className="container-premium mb-20 text-center">
+                <section className="container-premium mb-16 md:mb-20 text-center">
                     <Reveal width="100%">
                         <p className="text-caption text-copper mb-4">Curated Excellence</p>
-                        <h1 className="text-display text-charcoal mb-6">Art Discovery</h1>
-                        <p className="text-subheadline max-w-2xl mx-auto">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-display text-charcoal mb-6">Art Discovery</h1>
+                        <p className="text-subheadline max-w-2xl mx-auto px-4">
                             Explore our collection through curated themes, diverse artistic mediums, and exclusive series.
                         </p>
                     </Reveal>

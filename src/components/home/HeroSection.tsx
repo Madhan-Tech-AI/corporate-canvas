@@ -50,21 +50,21 @@ export default function HeroSection() {
 
         {/* Main Headline */}
         <Reveal width="100%" delay={0.3}>
-          <h1 className="text-display text-charcoal max-w-4xl mx-auto font-serif tracking-tight leading-tight">
+          <h1 className="text-display text-charcoal max-w-4xl mx-auto font-serif tracking-tight leading-[1.1] md:leading-tight">
             Where Space <span className="italic text-copper">Meets Soul.</span>
           </h1>
         </Reveal>
 
         {/* Subheadline */}
         <Reveal width="100%" delay={0.5}>
-          <p className="text-subheadline max-w-xl mx-auto mt-8 font-light text-charcoal/80">
+          <p className="text-subheadline max-w-xl mx-auto mt-6 md:mt-8 font-light text-charcoal/80 px-4">
             Transforming environments with curated artistry.
           </p>
         </Reveal>
 
         {/* CTAs */}
         <Reveal width="100%" delay={0.7}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-10 md:mt-16">
             <Link to="/collections" className="btn-primary min-w-[180px]">
               Explore Collection
             </Link>

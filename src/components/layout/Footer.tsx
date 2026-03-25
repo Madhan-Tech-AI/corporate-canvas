@@ -32,13 +32,13 @@ export default function Footer() {
     <footer className="bg-charcoal border-t border-charcoal-light">
       <div className="container-premium section-padding">
         {/* Main Footer */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
           {/* Brand Column */}
-          <div className="lg:col-span-1">
+          <div className="sm:col-span-2 lg:col-span-1">
             <Link to="/" className="text-white font-serif text-2xl tracking-wide">
               ARTÉUM
             </Link>
-            <p className="text-white text-sm mt-4 leading-relaxed max-w-xs">
+            <p className="text-white/60 text-sm mt-4 leading-relaxed max-w-sm">
               Curating exceptional artifacts and canvas art for discerning corporate spaces since 2015.
             </p>
           </div>

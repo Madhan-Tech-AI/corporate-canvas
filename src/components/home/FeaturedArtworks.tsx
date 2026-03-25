@@ -41,9 +41,9 @@ export default function FeaturedArtworks() {
             <div className="container-premium">
                 <Reveal width="100%">
                     <div className="flex justify-between items-end mb-12">
-                        <div>
+                        <div className="max-w-2xl">
                             <p className="text-caption text-copper mb-4">Curated Masterpieces</p>
-                            <h2 className="text-display text-charcoal">Featured Artworks</h2>
+                            <h2 className="text-headline text-charcoal leading-tight">Featured Artworks</h2>
                         </div>
                         <Link to="/collections" className="link-premium hidden md:block">
                             View All Collection
@@ -51,7 +51,7 @@ export default function FeaturedArtworks() {
                     </div>
                 </Reveal>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                     {featuredWorks.map((work, index) => (
                         <Reveal key={work.id} width="100%" delay={index * 0.1}>
                             <Link to={`/products/${work.id}`} className="group block h-full">

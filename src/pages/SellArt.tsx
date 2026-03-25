@@ -105,20 +105,20 @@ export default function SellArt() {
 
                     <div className="container-premium relative z-10 text-center">
                         <Reveal width="100%">
-                            <span className="text-copper text-sm font-medium tracking-widest uppercase mb-6 block">
+                            <span className="text-copper text-xs sm:text-sm font-medium tracking-widest uppercase mb-6 block">
                                 For Independent Artists
                             </span>
-                            <h1 className="text-display text-white mb-8 max-w-4xl mx-auto leading-tight">
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-display text-white mb-8 max-w-4xl mx-auto leading-tight">
                                 Share Your Vision with the <span className="text-copper italic">Corporate World</span>
                             </h1>
-                            <p className="text-xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed">
+                            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed px-4">
                                 Join a curated community of exceptional artists. We connect your masterpieces with prestigious offices and collectors globally, providing a platform where your art commands respect.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-5 justify-center">
-                                <Link to="/signup" className="btn-primary border-copper bg-copper hover:bg-copper-dark text-white hover:text-white shadow-lg shadow-copper/20 px-8 py-4">
+                            <div className="flex flex-col sm:flex-row gap-5 justify-center px-6">
+                                <Link to="/signup" className="btn-primary border-copper bg-copper hover:bg-copper-dark text-white hover:text-white shadow-lg shadow-copper/20 px-8 py-4 w-full sm:w-auto">
                                     Start Your Application
                                 </Link>
-                                <a href="#how-it-works" className="btn-secondary border-white/20 text-white hover:bg-white hover:text-charcoal bg-white/5 backdrop-blur-sm px-8 py-4">
+                                <a href="#how-it-works" className="btn-secondary border-white/20 text-white hover:bg-white hover:text-charcoal bg-white/5 backdrop-blur-sm px-8 py-4 w-full sm:w-auto">
                                     How It Works
                                 </a>
                             </div>
@@ -139,8 +139,8 @@ export default function SellArt() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                             {benefits.map((benefit, index) => (
                                 <Reveal key={index} delay={index * 0.1}>
-                                    <div className="bg-white p-10 rounded-sm shadow-sm border border-gray-100/50 hover:shadow-xl transition-all duration-300 h-full flex flex-col items-start group">
-                                        <div className="bg-copper/5 p-4 rounded-full group-hover:bg-copper/10 transition-colors mb-6">
+                                    <div className="bg-white p-10 rounded-sm shadow-md border border-gray-100/50 hover:shadow-2xl hover:-translate-y-3 transition-transform duration-300 ease-out h-full flex flex-col items-start group cursor-pointer">
+                                        <div className="bg-copper/5 p-4 rounded-full group-hover:bg-copper/10 group-hover:scale-110 transition-all duration-300 mb-6">
                                             {benefit.icon}
                                         </div>
                                         <h3 className="text-2xl font-serif text-charcoal mb-4 group-hover:text-copper transition-colors">{benefit.title}</h3>
@@ -281,12 +281,25 @@ export default function SellArt() {
 
                             {steps.map((item, index) => (
                                 <Reveal key={index} delay={index * 0.1}>
-                                    <div className="relative z-10 bg-charcoal p-4 md:pt-0">
-                                        <div className="w-20 h-20 bg-charcoal border border-white/10 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-serif text-copper shadow-xl shadow-black/20">
-                                            {item.step}
+                                    <div className="relative z-10 bg-charcoal p-6 md:pt-8 rounded-2xl border border-white/5 hover:border-copper/20 hover:bg-charcoal-light/50 transition-all duration-300 flex flex-col items-center group cursor-pointer hover:-translate-y-4 hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.8)] active:scale-95">
+                                        
+                                        <div className="w-24 h-24 mb-8 relative flex items-center justify-center group-hover:scale-110 transition-transform duration-500 ease-out">
+                                            {/* Outer glowing aura that appears on hover */}
+                                            <div className="absolute inset-0 bg-copper/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                            
+                                            {/* The luxury numbered circle */}
+                                            <div className="relative w-full h-full bg-gradient-to-br from-charcoal-light to-charcoal border border-copper/30 group-hover:border-copper rounded-full flex items-center justify-center shadow-inner shadow-black/80 overflow-hidden transition-colors duration-500">
+                                                {/* Subtle glossy shine effect at top */}
+                                                <div className="absolute top-0 left-0 w-full h-[45%] bg-gradient-to-b from-white/10 to-transparent rounded-t-full"></div>
+                                                
+                                                <span className="text-3xl font-serif text-copper drop-shadow-lg group-hover:text-white transition-colors duration-300">
+                                                    {item.step}
+                                                </span>
+                                            </div>
                                         </div>
+                                        
                                         <div className="text-center">
-                                            <h3 className="text-xl font-medium text-white mb-3">{item.title}</h3>
+                                            <h3 className="text-xl font-medium text-white mb-3 group-hover:text-copper transition-colors duration-300">{item.title}</h3>
                                             <p className="text-white/60 text-sm leading-relaxed">{item.description}</p>
                                         </div>
                                     </div>
