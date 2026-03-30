@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Reveal from '@/components/Reveal';
@@ -179,10 +180,10 @@ export default function About() {
                   </div>
 
                   <div className="flex justify-center lg:justify-end">
-                    <button className="bg-white text-charcoal px-8 py-4 uppercase tracking-widest font-medium hover:bg-copper hover:text-white transition-colors flex items-center gap-3">
+                    <Link to="/contact" className="bg-white text-charcoal px-8 py-4 uppercase tracking-widest font-medium hover:bg-copper hover:text-white transition-colors flex items-center gap-3">
                       Book an Appointment
                       <ArrowRight className="w-4 h-4" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

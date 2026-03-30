@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { saveContactMessage } from '@/lib/adminStorage';
+import { toast } from 'sonner';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -22,6 +24,8 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     setTimeout(() => {
+      saveContactMessage(formData);
+      toast.success('Message sent! We will get back to you soon.');
       setIsSubmitting(false);
       setFormData({ name: '', email: '', company: '', phone: '', subject: '', message: '' });
     }, 1500);

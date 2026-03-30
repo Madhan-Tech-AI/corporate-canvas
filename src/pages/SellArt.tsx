@@ -176,18 +176,18 @@ export default function SellArt() {
                                             <div className="w-4" />
                                         </div>
 
-                                        <div className="flex h-[400px]">
+                                        <div className="flex flex-col sm:flex-row sm:h-[400px]">
                                             {/* Sidebar */}
-                                            <div className="w-16 md:w-20 bg-charcoal-light border-r border-white/5 flex flex-col items-center py-6 gap-6">
-                                                <div className="w-8 h-8 rounded-full bg-copper mb-4" />
-                                                <div className="p-2 bg-white/10 rounded-md"><BarChart3 className="w-5 h-5 text-white" /></div>
-                                                <div className="p-2 text-white/40 hover:text-white transition-colors"><Palette className="w-5 h-5" /></div>
-                                                <div className="p-2 text-white/40 hover:text-white transition-colors"><Upload className="w-5 h-5" /></div>
-                                                <div className="p-2 text-white/40 hover:text-white transition-colors"><DollarSign className="w-5 h-5" /></div>
+                                            <div className="w-full sm:w-16 md:w-20 bg-charcoal-light border-b sm:border-b-0 sm:border-r border-white/5 flex flex-row sm:flex-col justify-center sm:justify-start items-center p-4 sm:py-6 gap-4 sm:gap-6 overflow-x-auto">
+                                                <div className="w-8 h-8 rounded-full bg-copper sm:mb-4 shrink-0" />
+                                                <div className="p-2 bg-white/10 rounded-md shrink-0"><BarChart3 className="w-5 h-5 text-white" /></div>
+                                                <div className="p-2 text-white/40 hover:text-white transition-colors shrink-0"><Palette className="w-5 h-5" /></div>
+                                                <div className="p-2 text-white/40 hover:text-white transition-colors shrink-0"><Upload className="w-5 h-5" /></div>
+                                                <div className="p-2 text-white/40 hover:text-white transition-colors shrink-0"><DollarSign className="w-5 h-5" /></div>
                                             </div>
 
                                             {/* Main Content */}
-                                            <div className="flex-1 p-8 bg-charcoal">
+                                            <div className="flex-1 p-5 sm:p-8 bg-charcoal overflow-y-auto">
                                                 <div className="flex justify-between items-end mb-8">
                                                     <div>
                                                         <h4 className="text-white text-lg font-medium mb-1">Overview</h4>
@@ -198,7 +198,7 @@ export default function SellArt() {
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                                                     <div className="bg-gradient-to-br from-white/10 to-white/5 p-5 rounded-lg border border-white/5">
                                                         <p className="text-white/40 text-xs mb-2 uppercase tracking-wider">Total Sales</p>
                                                         <p className="text-2xl text-white font-medium">$12,450</p>

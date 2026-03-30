@@ -270,7 +270,7 @@ export default function AdminDashboard() {
                         <CardTitle>Quick Actions</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <a
                                 href="/admin/orders"
                                 className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-lg hover:shadow-md transition-all border border-purple-500/20 group"

@@ -673,7 +673,7 @@ export default function ProductListing() {
           <div className="flex-1">
             {/* Grid */}
             <div className={cn(
-              'grid gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              'grid gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
             )}>
 
               {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
@@ -690,7 +690,7 @@ export default function ProductListing() {
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
 
                       {/* Hover Actions: Add to Bag & Buy Now */}
-                      <div className="absolute inset-x-4 bottom-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex flex-col gap-2 opacity-0 group-hover:opacity-100 pb-2 z-10">
+                      <div className="absolute inset-x-4 bottom-4 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-500 ease-out flex flex-col gap-2 md:opacity-0 md:group-hover:opacity-100 opacity-100 translate-y-0 pb-2 z-10">
                         <button
                           onClick={(e) => {
                             e.preventDefault();

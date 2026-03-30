@@ -64,11 +64,11 @@ export default function HeroSection() {
 
         {/* CTAs */}
         <Reveal width="100%" delay={0.7}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-10 md:mt-16">
-            <Link to="/collections" className="btn-primary min-w-[180px]">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-10 md:mt-16 w-full px-4 sm:px-0">
+            <Link to="/collections" className="btn-primary w-full sm:w-auto min-w-[180px]">
               Explore Collection
             </Link>
-            <Link to="/contact" className="px-8 py-3 text-charcoal text-sm uppercase tracking-widest hover:text-copper transition-colors border-b border-transparent hover:border-copper">
+            <Link to="/contact" className="w-full sm:w-auto text-center px-8 py-3 text-charcoal text-sm uppercase tracking-widest hover:text-copper transition-colors border-b border-transparent hover:border-copper">
               Advisory
             </Link>
           </div>

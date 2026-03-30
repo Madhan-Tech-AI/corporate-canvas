@@ -41,6 +41,19 @@ export interface SellArtApplication {
   updatedAt: string;
 }
 
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  company?: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  status: 'pending' | 'in-review' | 'completed' | 'rejected';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Analytics {
   totalRevenue: number;
   totalProducts: number;
@@ -55,6 +68,7 @@ const STORAGE_KEYS = {
   PRODUCTS: 'admin-products',
   CUSTOM_ART_APPS: 'custom-art-applications',
   SELL_ART_APPS: 'sell-art-applications',
+  CONTACT_MESSAGES: 'admin-contact-messages',
   AUTH: 'admin-auth',
   ORDERS: 'admin-orders',
 } as const;
@@ -211,6 +225,45 @@ export const updateSellArtApplicationStatus = (
   return apps[index];
 };
 
+// Contact Messages Management
+export const getContactMessages = (): ContactMessage[] => {
+  const data = localStorage.getItem(STORAGE_KEYS.CONTACT_MESSAGES);
+  return data ? JSON.parse(data) : [];
+};
+
+export const saveContactMessage = (
+  msg: Omit<ContactMessage, 'id' | 'status' | 'createdAt' | 'updatedAt'>
+): ContactMessage => {
+  const messages = getContactMessages();
+  const newMessage: ContactMessage = {
+    ...msg,
+    id: `contact-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  messages.push(newMessage);
+  localStorage.setItem(STORAGE_KEYS.CONTACT_MESSAGES, JSON.stringify(messages));
+  return newMessage;
+};
+
+export const updateContactMessageStatus = (
+  id: string,
+  status: ContactMessage['status']
+): ContactMessage | null => {
+  const messages = getContactMessages();
+  const index = messages.findIndex(m => m.id === id);
+  if (index === -1) return null;
+  
+  messages[index] = {
+    ...messages[index],
+    status,
+    updatedAt: new Date().toISOString(),
+  };
+  localStorage.setItem(STORAGE_KEYS.CONTACT_MESSAGES, JSON.stringify(messages));
+  return messages[index];
+};
+
 // Orders Management
 export const getOrders = (): Order[] => {
   const data = localStorage.getItem(STORAGE_KEYS.ORDERS);
@@ -231,6 +284,7 @@ export const getAnalytics = (): Analytics => {
   const products = getProducts();
   const customApps = getCustomArtApplications();
   const sellApps = getSellArtApplications();
+  const contactMsgs = getContactMessages();
   const orders = getOrders();
   
   // Calculate total revenue from actual orders + mock historical data
@@ -251,7 +305,8 @@ export const getAnalytics = (): Analytics => {
     totalRevenue,
     totalProducts: products.length,
     pendingApplications: customApps.filter(a => a.status === 'pending').length + 
-                        sellApps.filter(a => a.status === 'pending').length,
+                        sellApps.filter(a => a.status === 'pending').length +
+                        contactMsgs.filter(a => a.status === 'pending').length,
     approvedArtists: sellApps.filter(a => a.status === 'approved').length,
     monthlyRevenue,
     topProducts,
