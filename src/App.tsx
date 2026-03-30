@@ -24,6 +24,11 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import CorporateServices from "./pages/CorporateServices";
 import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/ForgotPassword";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Consultancy from "./pages/Consultancy";
+import TradeProgram from "./pages/TradeProgram";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProductsPage from "./pages/admin/ProductsPage";
@@ -78,6 +83,11 @@ const App = () => (
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/corporate-services" element={<CorporateServices />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/consultancy" element={<Consultancy />} />
+                    <Route path="/trade" element={<TradeProgram />} />
 
                     {/* Checkout Routes */}
                     <Route path="/checkout/review" element={<Review />} />
