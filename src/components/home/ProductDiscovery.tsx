@@ -54,7 +54,7 @@ export default function ProductDiscovery() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {featuredProducts.map((product) => (
             <Link
               key={product.id}
@@ -64,7 +64,7 @@ export default function ProductDiscovery() {
               onMouseLeave={() => setHoveredId(null)}
             >
               {/* Image Container */}
-              <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-muted mb-4">
+              <div className="relative aspect-square md:aspect-[4/5] overflow-hidden rounded-2xl bg-muted mb-4">
                 <img
                   src={product.image}
                   alt={product.name}

@@ -163,7 +163,7 @@ export default function ProductDetail() {
             {/* Image Section */}
             <div className="space-y-6">
               <Reveal width="100%">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-gray-100 shadow-sm border border-gray-100/50">
+                <div className="relative mx-auto max-w-[260px] sm:max-w-[340px] md:max-w-none aspect-square md:aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-sm border border-gray-100/50">
                   {images.length > 0 ? (
                     <img
                       src={images[currentImage]}
@@ -278,11 +278,11 @@ export default function ProductDetail() {
               <Reveal width="100%">
                 <h2 className="text-3xl font-serif text-charcoal mb-12 text-center">You May Also Admire</h2>
               </Reveal>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                 {relatedProducts.map((p, idx) => (
                   <Reveal key={p.id} delay={idx * 0.1}>
                     <Link to={`/products/${p.id}`} className="group block">
-                      <div className="aspect-[4/5] overflow-hidden rounded-sm bg-gray-100 mb-6 relative">
+                      <div className="aspect-square md:aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 mb-6 relative">
                         <img
                           src={p.image_url}
                           alt={p.name}

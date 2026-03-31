@@ -50,10 +50,10 @@ export default function CategoryPreview() {
                     </div>
                 </Reveal>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-8">
                     {categories.map((category, index) => (
                         <Reveal key={category.id} width="100%" delay={index * 0.1}>
-                            <Link to={`/collections?category=${category.slug}`} className="group relative block aspect-[4/5] sm:aspect-[3/4] overflow-hidden rounded-sm">
+                            <Link to={`/collections?category=${category.slug}`} className="group relative block aspect-square sm:aspect-[3/4] md:aspect-[4/5] overflow-hidden rounded-2xl">
                                 <img
                                     src={category.image}
                                     alt={category.name}

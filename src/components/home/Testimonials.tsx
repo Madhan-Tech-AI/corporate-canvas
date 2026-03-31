@@ -37,7 +37,7 @@ export default function Testimonials() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {testimonials.map((item, index) => (
                         <Reveal key={item.id} width="100%" delay={index * 0.1}>
-                            <div className="bg-warm-white/50 p-8 rounded-sm h-full flex flex-col items-center hover:shadow-lg transition-shadow duration-300">
+                            <div className="bg-warm-white/50 p-8 rounded-2xl border border-border h-full flex flex-col items-center hover:shadow-lg transition-shadow duration-300">
                                 <div className="flex gap-1 text-copper mb-6">
                                     {[...Array(item.rating)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 fill-current" />

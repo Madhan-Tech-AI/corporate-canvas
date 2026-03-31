@@ -16,9 +16,9 @@ export default function Newsletter() {
                             <input
                                 type="email"
                                 placeholder="Enter your email address"
-                                className="flex-1 px-4 py-3 bg-white border border-gray-200 focus:border-copper outline-none transition-colors rounded-sm"
+                                className="flex-1 px-4 py-3 bg-white border border-gray-200 focus:border-copper outline-none transition-colors rounded-xl"
                             />
-                            <button type="submit" className="btn-primary flex items-center justify-center gap-2">
+                            <button type="submit" className="btn-primary flex items-center justify-center gap-2 rounded-xl">
                                 Subscribe
                                 <ArrowRight className="w-4 h-4" />
                             </button>

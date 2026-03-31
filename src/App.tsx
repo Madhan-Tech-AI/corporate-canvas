@@ -29,6 +29,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Consultancy from "./pages/Consultancy";
 import TradeProgram from "./pages/TradeProgram";
+import ShippingReturns from "./pages/ShippingReturns";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProductsPage from "./pages/admin/ProductsPage";
@@ -88,6 +89,7 @@ const App = () => (
                     <Route path="/privacy" element={<Privacy />} />
                     <Route path="/consultancy" element={<Consultancy />} />
                     <Route path="/trade" element={<TradeProgram />} />
+                    <Route path="/shipping-returns" element={<ShippingReturns />} />
 
                     {/* Checkout Routes */}
                     <Route path="/checkout/review" element={<Review />} />

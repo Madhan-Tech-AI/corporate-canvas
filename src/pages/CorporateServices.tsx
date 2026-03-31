@@ -67,11 +67,20 @@ export default function CorporateServices() {
               {services.map((service) => (
                 <div
                   key={service.title}
-                  className="p-8 bg-background border border-border rounded-sm hover:border-champagne/30 transition-colors duration-300"
+                  className="p-8 bg-background border border-border rounded-[2rem] hover:border-copper/30 transition-all duration-300 group flex flex-col h-full"
                 >
-                  <service.icon className="w-10 h-10 text-champagne mb-6" />
-                  <h3 className="text-cream font-serif text-xl mb-4">{service.title}</h3>
-                  <p className="text-cream-muted text-sm leading-relaxed">{service.description}</p>
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex-1 pr-4">
+                      <h3 className="text-charcoal font-serif text-2xl mb-4 group-hover:text-copper transition-colors">{service.title}</h3>
+                      <p className="text-charcoal/70 text-sm leading-relaxed">{service.description}</p>
+                    </div>
+                    <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center shrink-0">
+                      <service.icon className="w-8 h-8 text-copper" />
+                    </div>
+                  </div>
+                  <div className="mt-auto flex items-center gap-2 text-copper font-medium text-sm">
+                    Learn More <span className="text-lg">→</span>
+                  </div>
                 </div>
               ))}
             </div>

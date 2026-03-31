@@ -34,11 +34,11 @@
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 30 15% 85%;
+    --border: 30 10% 80%;
     --input: 30 15% 90%;
     --ring: 20 75% 50%;
 
-    --radius: 0.25rem;
+    --radius: 1rem;
 
     /* Copper Custom Tokens */
     --copper: 20 75% 50%;
@@ -142,7 +142,7 @@
 
   /* Premium Card */
   .card-premium {
-    @apply bg-card rounded-sm overflow-hidden;
+    @apply bg-card rounded-2xl overflow-hidden border border-border;
     box-shadow: var(--shadow-subtle);
     transition: all var(--transition-slow);
   }

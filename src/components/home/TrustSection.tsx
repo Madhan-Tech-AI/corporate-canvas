@@ -94,7 +94,7 @@ export default function TrustSection() {
             <div
               key={testimonial.author}
               className={cn(
-                'p-8 md:p-10 bg-warm-cream rounded-sm border border-border'
+                'p-8 md:p-10 bg-warm-cream rounded-2xl border border-border'
               )}
             >
               <blockquote className="text-foreground text-lg md:text-xl font-serif italic leading-relaxed mb-8">

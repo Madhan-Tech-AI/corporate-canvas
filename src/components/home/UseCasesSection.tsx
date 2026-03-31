@@ -64,7 +64,7 @@ export default function UseCasesSection() {
               key={useCase.id}
               data-id={useCase.id}
               className={cn(
-                'group relative overflow-hidden rounded-sm transition-all duration-700 ease-premium',
+                'group relative overflow-hidden rounded-2xl border border-border transition-all duration-700 ease-premium',
                 visibleCards.includes(useCase.id)
                   ? 'translate-y-0 opacity-100'
                   : 'translate-y-12 opacity-0'

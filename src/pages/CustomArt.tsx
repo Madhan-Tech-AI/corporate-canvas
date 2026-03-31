@@ -110,7 +110,7 @@ export default function CustomArt() {
 
                         {/* Form Side */}
                         <Reveal>
-                            <div className="bg-white p-8 md:p-10 rounded-sm shadow-sm border border-gray-100">
+                            <div className="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-serif text-charcoal mb-6">
                                     {activeService === 'painting' ? 'Commission a Masterpiece' : 'Museum-Quality Framing'}
                                 </h2>
@@ -239,7 +239,7 @@ export default function CustomArt() {
                         {/* Info Side */}
                         <div className="space-y-12">
                             <Reveal delay={0.2}>
-                                <div className="bg-warm-white p-8 rounded-sm">
+                                <div className="bg-warm-white p-8 rounded-2xl">
                                     <h3 className="text-xl font-serif text-charcoal mb-4 flex items-center gap-2">
                                         <Clock className="w-5 h-5 text-copper" />
                                         Estimated Timeline
@@ -271,7 +271,7 @@ export default function CustomArt() {
                             </Reveal>
 
                             <Reveal delay={0.3}>
-                                <div className="relative rounded-sm overflow-hidden aspect-video">
+                                <div className="relative rounded-2xl overflow-hidden aspect-video">
                                     <img
                                         src={activeService === 'painting'
                                             ? "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80"

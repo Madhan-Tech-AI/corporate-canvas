@@ -55,7 +55,7 @@ export default function FeaturedArtworks() {
                     {featuredWorks.map((work, index) => (
                         <Reveal key={work.id} width="100%" delay={index * 0.1}>
                             <Link to={`/products/${work.id}`} className="group block h-full">
-                                <div className="relative aspect-[4/5] overflow-hidden mb-6 bg-charcoal-light rounded-sm">
+                                <div className="relative aspect-square md:aspect-[4/5] overflow-hidden mb-6 bg-charcoal-light rounded-2xl">
                                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500 z-10" />
                                     <img
                                         src={work.image}

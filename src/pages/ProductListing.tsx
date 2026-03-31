@@ -38,7 +38,7 @@ const StyledCard = styled.div`
   background: white;
   box-shadow: rgba(0, 0, 0, 0.04) 0px 4px 6px -1px, rgba(0, 0, 0, 0.02) 0px 2px 4px -1px;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
   position: relative;
   transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -673,13 +673,13 @@ export default function ProductListing() {
           <div className="flex-1">
             {/* Grid */}
             <div className={cn(
-              'grid gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              'grid gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
             )}>
 
               {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
                 <Link key={product.id} to={`/products/${product.id}`} target="_blank" rel="noopener noreferrer" className="group block h-full">
                   <StyledCard>
-                    <div className="relative aspect-[4/5] overflow-hidden bg-gray-50">
+                    <div className="relative aspect-square md:aspect-[4/5] overflow-hidden bg-gray-50">
                       <img
                         src={product.image}
                         alt={product.name}

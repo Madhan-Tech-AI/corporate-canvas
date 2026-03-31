@@ -56,7 +56,7 @@ export default function TradeProgram() {
               </ul>
             </div>
 
-            <div className="bg-charcoal p-8 md:p-12 text-white">
+            <div className="bg-charcoal p-8 md:p-12 text-white rounded-2xl relative overflow-hidden">
               <h3 className="text-2xl font-serif mb-6">Apply for Membership</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

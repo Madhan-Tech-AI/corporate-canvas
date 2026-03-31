@@ -66,7 +66,7 @@ export default function About() {
           <Reveal delay={0.2}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {studioImages.map((img, i) => (
-                <div key={i} className={`relative overflow-hidden rounded-sm group ${i === 1 ? 'md:col-span-2 md:row-span-2' : ''}`}>
+                <div key={i} className={`relative overflow-hidden rounded-2xl group ${i === 1 ? 'md:col-span-2 md:row-span-2' : ''}`}>
                   <img
                     src={img}
                     alt="Studio glimpse"
@@ -145,7 +145,7 @@ export default function About() {
         <section className="py-24 border-t border-gray-100">
           <div className="container-premium">
             <Reveal>
-              <div className="bg-charcoal text-white rounded-sm p-8 md:p-16 relative overflow-hidden">
+              <div className="bg-charcoal text-white rounded-2xl p-8 md:p-16 relative overflow-hidden">
                 {/* Map Background Placeholder */}
                 <div className="absolute inset-0 opacity-20 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-0.1278,51.5074,12,0/1200x600')] bg-cover bg-center mix-blend-overlay"></div>
 
